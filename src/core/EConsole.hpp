@@ -7,12 +7,17 @@
 //
 
 #pragma once
-#include <string>
+#include "common.hpp"
+#include <sstream>
 
 class EConsole {
 private:
+    bool isEcho = true;
+    std::stringstream echo_buffer;
 public:
     EConsole();
+    void setEcho(bool value);
+	string getBuffer();
     void log(std::string type, std::string text);
     ~EConsole();
 protected:

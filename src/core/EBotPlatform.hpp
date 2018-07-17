@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-namespace EGGIN {
+namespace EBotPlatform {
     extern bool isWork;
 
     int initEngine();

@@ -30,15 +30,26 @@ EConsole::EConsole()
 
 }
 
+void EConsole::setEcho(bool value)
+{
+	if (value) echo_buffer.clear();
+	isEcho = value;
+}
+
+string EConsole::getBuffer()
+{
+	return echo_buffer.str();
+}
+
 /* Log message to console */
 // type - message type | text - message
 void EConsole::log(std::string type, std::string text)
 {
-    std::cout << "[" << currentDateTime() << "] [" << type << "] " << text << std::endl;
+    (isEcho ? std::cout : echo_buffer) << "[" << currentDateTime() << "] [" << type << "] " << text << std::endl;
 }
 
 /* Shutdown console and log */
 EConsole::~EConsole()
 {
-    
+
 }

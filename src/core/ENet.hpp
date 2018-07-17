@@ -1,6 +1,8 @@
 #pragma once
+#include "common.hpp"
 #include <curl/curl.h>
 #include <unordered_map>
+#include <map>
 #include <thread>
 
 class ENetException {
@@ -20,16 +22,13 @@ public:
     std::unordered_map<std::thread::id, CURL*> handles;
 
     ENet();
-    void setup_curl(CURL *handle, std::string *buffer);
-    std::string sendGet(std::string url);
+    string urlEncode(string str);
+    string urlDecode(string str);
+    void setup_curl(CURL *handle, string *buffer);
+    string sendGet(string url);
+    string sendPost(string url, std::map<string, string> params);
+    string sendPost(string url, string postdata);
     ~ENet();
-  /*void init();
-  void setup_curl(CURL *handle, string *buffer);
-  size_t _curlWriteCallback(char *ptr, size_t size, size_t nmemb, void *data);
-  string makeFields(map<string, string> &fields);
-  string GET(string url);
-  string POST(string url, const char* data);
-  string POST(string url, map<string, string> &fields);*/
 };
 
 extern ENet *e_net;

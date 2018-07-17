@@ -1,3 +1,4 @@
 mkdir build
+mkdir ../ebpbot
 cd build
-cmake .. && make && ./EBP
+cmake .. && make && mv ./EBP ../../ebpbot/EBP && cd ../../ebpbot && ./EBP

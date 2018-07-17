@@ -16,7 +16,25 @@ ENet::ENet()
     handles.insert({ main_thread_id, curl_easy_init() });
 }
 
-void ENet::setup_curl(CURL *handle, std::string *buffer)
+string ENet::urlEncode(string str)
+{
+	char* esc_text = curl_easy_escape(NULL, str.c_str(), str.length());
+	if (!esc_text) throw std::runtime_error("Can not convert string to URL");
+	string result = esc_text;
+	curl_free(esc_text);
+	return result;
+}
+
+string ENet::urlDecode(string str)
+{
+	char* esc_text = curl_easy_unescape(NULL, str.c_str(), str.length(), NULL);
+	if (!esc_text) throw std::runtime_error("Can not convert URL to string");
+	string result = esc_text;
+	curl_free(esc_text);
+	return result;
+}
+
+void ENet::setup_curl(CURL *handle, string *buffer)
 {
     curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, curlWriteCallback);
     curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)buffer);
@@ -27,6 +45,27 @@ void ENet::setup_curl(CURL *handle, std::string *buffer)
 std::string ENet::sendGet(std::string url)
 {
     curltuner tuner = curltuner(url);
+    CURLcode result_code = curl_easy_perform(tuner.handle);
+    if(result_code != CURLE_OK) throw new ENetException(result_code);
+    return tuner.buffer;
+}
+
+string ENet::sendPost(string url, std::map<string, string> params)
+{
+    string paramline;
+	for (auto iter = params.begin(); iter != params.end(); iter++) {
+		paramline.append(iter->first + "=" + urlEncode(iter->second) + "&");
+	}
+
+    return this->sendPost(url, paramline);
+}
+
+string ENet::sendPost(string url, string postdata)
+{
+    //printf("%s?%s\n", url.c_str(), postdata.c_str());
+    curltuner tuner = curltuner(url);
+    curl_easy_setopt(tuner.handle, CURLOPT_POST, 1);
+    curl_easy_setopt(tuner.handle, CURLOPT_POSTFIELDS, postdata.c_str());
     CURLcode result_code = curl_easy_perform(tuner.handle);
     if(result_code != CURLE_OK) throw new ENetException(result_code);
     return tuner.buffer;

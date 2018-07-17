@@ -7,26 +7,26 @@
 //
 
 #pragma once
+#include "common.hpp"
 #include <vector>
 #include <map>
-#include <string>
 
-typedef std::vector<std::string> ECmdArgs;
-typedef std::string (*ECmdFunction)(ECmdArgs args);
+typedef std::vector<string> ECmdArgs;
+typedef string (*ECmdFunction)(ECmdArgs args);
 
 struct ECmdCommand
-{ std::string name; ECmdFunction function; std::string desc; };
+{ string name; ECmdFunction function; string desc; };
 
 class ECmd {
 private:
-    std::map<std::string, ECmdCommand> commands;
+    std::map<string, ECmdCommand> commands;
 public:
     ECmd();
-	void add(std::string cmd_name, ECmdFunction function, std::string cmd_desc);
-	void exe(std::string text);
-	ECmdArgs parse(std::string line);
-	bool exists(const std::string cmd_name);
-	void exec(const std::string cpath);
+	void add(string cmd_name, ECmdFunction function, string cmd_desc);
+	void exe(string text);
+	ECmdArgs parse(string line);
+	bool exists(const string cmd_name);
+	void exec(const string cpath);
     ~ECmd();
 };
 

@@ -10,41 +10,51 @@
 #include "EConsole.hpp"
 #include "ECmd.hpp"
 #include "ENet.hpp"
+#include "vk/EVkApi.hpp"
 #include "vk/ELongPoll.hpp"
 
 
-bool EGGIN::isWork = true;
+bool EBotPlatform::isWork = true;
 
 int main()
 {
-    EGGIN::initEngine();
-    while (EGGIN::isWork) { EGGIN::frame(); }
+    EBotPlatform::initEngine();
+    while (EBotPlatform::isWork) { EBotPlatform::frame(); }
     return 0;
 }
 
-int EGGIN::initEngine()
+int EBotPlatform::initEngine()
 {
-    // Init Core
-    e_console = new EConsole();
-    e_cmd = new ECmd();
-    e_net = new ENet();
+    try {
+        // Init Core
+        e_console = new EConsole();
+        e_cmd = new ECmd();
+        e_net = new ENet();
+        e_vkapi = new EVkApi();
+        e_longpoll = new ELongPoll();
 
-    e_console->log("CORE", "Инициализация EBotPlatform V1.0.0...");
-    e_console->log("CORE", "Электро-Волк 2016-2018.");
+        e_console->log("CORE", "EBotPlatform V1.0.0.");
+        e_console->log("CORE", "Электро-Волк 2016-2018.");
 
-    e_longpoll = new ELongPoll();
-
-    e_longpoll->start();
-
+        e_console->setEcho(false);
+        e_cmd->exec("config.cfg");
+        e_console->setEcho(true);
+        
+        e_longpoll->start();
+    }
+    catch (const std::runtime_error& error) {
+        e_console->log("CRASH", error.what());
+        EBotPlatform::shutdown();
+    }
     return 0;
 }
 
-void EGGIN::frame()
+void EBotPlatform::frame()
 {
     e_longpoll->frame();
 }
 
-void EGGIN::shutdown()
+void EBotPlatform::shutdown()
 {
     isWork = false;
 }

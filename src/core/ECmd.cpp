@@ -20,7 +20,7 @@ ECmd* e_cmd;
 
 ECmd::ECmd()
 {
-	ECmd::exec("config.cfg");
+
 }
 
 bool ECmd::exists(const std::string cmd_name)

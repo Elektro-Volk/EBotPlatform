@@ -11,6 +11,7 @@ find_package(CURL REQUIRED)
 
 # Engine source files
 include_directories( src/ )
+include_directories( third_party/rapidjson/include )
 include( src/utils/Utils.cmake )
 include( src/core/Core.cmake )
 # Other
