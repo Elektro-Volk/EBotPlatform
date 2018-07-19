@@ -62,7 +62,6 @@ string ENet::sendPost(string url, std::map<string, string> params)
 
 string ENet::sendPost(string url, string postdata)
 {
-    //printf("%s?%s\n", url.c_str(), postdata.c_str());
     curltuner tuner = curltuner(url);
     curl_easy_setopt(tuner.handle, CURLOPT_POST, 1);
     curl_easy_setopt(tuner.handle, CURLOPT_POSTFIELDS, postdata.c_str());

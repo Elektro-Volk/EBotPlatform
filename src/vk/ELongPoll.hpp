@@ -13,6 +13,7 @@
 
 class ELongPoll {
 private:
+    bool isWork = false;
     std::map<string, string> params;
     string server;
 
@@ -22,6 +23,7 @@ private:
 public:
     ELongPoll();
     void start();
+    void stop();
     void frame();
     ~ELongPoll();
 };

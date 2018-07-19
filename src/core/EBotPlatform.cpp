@@ -12,6 +12,7 @@
 #include "ENet.hpp"
 #include "vk/EVkApi.hpp"
 #include "vk/ELongPoll.hpp"
+#include "lua/ELua.hpp"
 
 
 bool EBotPlatform::isWork = true;
@@ -32,6 +33,7 @@ int EBotPlatform::initEngine()
         e_net = new ENet();
         e_vkapi = new EVkApi();
         e_longpoll = new ELongPoll();
+        e_lua = new ELua();
 
         e_console->log("CORE", "EBotPlatform V1.0.0.");
         e_console->log("CORE", "Электро-Волк 2016-2018.");
@@ -39,11 +41,12 @@ int EBotPlatform::initEngine()
         e_console->setEcho(false);
         e_cmd->exec("config.cfg");
         e_console->setEcho(true);
-        
+
         e_longpoll->start();
+        e_lua->start();
     }
     catch (const std::runtime_error& error) {
-        e_console->log("CRASH", error.what());
+        e_console->error("CRASH", error.what());
         EBotPlatform::shutdown();
     }
     return 0;

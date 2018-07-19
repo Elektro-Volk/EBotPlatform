@@ -9,6 +9,8 @@
 #include "core/EConsole.hpp"
 #include "core/ENet.hpp"
 #include "vk/EVkApi.hpp"
+#include "lua/ELua.hpp"
+#include <thread>
 
 using namespace rapidjson;
 
@@ -22,6 +24,12 @@ ELongPoll::ELongPoll()
 void ELongPoll::start()
 {
     this->getServer();
+    isWork = true;
+}
+
+void ELongPoll::stop()
+{
+    isWork = false;
 }
 
 void ELongPoll::getServer()
@@ -42,9 +50,13 @@ void ELongPoll::getServer()
 
 void ELongPoll::frame()
 {
+    if (!isWork) {
+        std::this_thread::yield(); // CPU 100% hack :)
+        return;
+    }
+
     Document data;
 	data.Parse(e_net->sendPost(server, params).c_str());
-    //e_console->log("LP", e_net->sendPost(server, params));
     // Check data
 	if(!data.IsObject()) return;
 	if(data.HasMember("failed")) { processError(data); return; }
@@ -64,9 +76,10 @@ void ELongPoll::processError(rapidjson::Document &err)
 
 void ELongPoll::processMessage(rapidjson::Value &upd)
 {
-  //if(upd["type"] != "message_new") return; // This is not a message
+  if(upd["type"] != "message_new") return; // This is not a message
   e_console->log("LP", "Сообщение: " + std::to_string(upd["object"]["id"].GetInt()));
-  //luawork::push(upd["object"]);
+
+  e_lua->add(upd["object"]);
 }
 
 ELongPoll::~ELongPoll() {}
