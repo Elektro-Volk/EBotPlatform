@@ -45,7 +45,20 @@ string EConsole::getBuffer()
 // type - message type | text - message
 void EConsole::log(std::string type, std::string text)
 {
-    (isEcho ? std::cout : echo_buffer) << "[" << currentDateTime() << "] [" << type << "] " << text << std::endl;
+    (isEcho ? std::cout : echo_buffer)
+        << "\x1b[34m[\x1b[34;1m" << currentDateTime() << "\x1b[0;34m]"
+        << " [\x1b[34;1m" << type << "\x1b[0;34m] "
+        << "\x1b[0m" << text
+        << std::endl;
+}
+
+void EConsole::error(std::string type, std::string text)
+{
+    (isEcho ? std::cerr : echo_buffer)
+        << "\x1b[34m[\x1b[34;1m" << currentDateTime() << "\x1b[0;34m]"
+        << " [\x1b[31;5m" << type << "\x1b[0;34m] "
+        << "\x1b[0m" << text
+        << std::endl;
 }
 
 /* Shutdown console and log */

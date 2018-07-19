@@ -19,6 +19,7 @@ public:
     void setEcho(bool value);
 	string getBuffer();
     void log(std::string type, std::string text);
+    void error(std::string type, std::string text);
     ~EConsole();
 protected:
 
