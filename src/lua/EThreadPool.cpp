@@ -31,7 +31,7 @@ EThreadPool::EThreadPool()
         e_console->log("POOL", "Создано " + std::to_string(pool_count) + " потока.");
 }
 
-void EThreadPool::add(rapidjson::Value &msg)
+void EThreadPool::add(string type, rapidjson::Value &msg)
 {
     // find free pool and add msg then
     EThreadPoolWorker *freeWorker = nullptr;
@@ -42,7 +42,7 @@ void EThreadPool::add(rapidjson::Value &msg)
             break;
         }
     }
-    freeWorker->add(msg);
+    freeWorker->add(type, msg);
 }
 
 EThreadPool::~EThreadPool()

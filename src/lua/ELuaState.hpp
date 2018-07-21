@@ -24,6 +24,7 @@ private:
     lua_State *state;
 public:
     ELuaState();
+    lua_State *getState();
     ~ELuaState();
 protected:
 

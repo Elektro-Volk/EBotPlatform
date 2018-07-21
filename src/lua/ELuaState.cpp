@@ -27,6 +27,8 @@ ELuaState::ELuaState()
     state = luaL_newstate();
     luaL_openlibs(state);
     //init_lua_api(state);
+    lua_createtable(state, 0, 1);
+    lua_setglobal(state, "vk_events");
 
     //luaModules::loadModules(state);
     string lua_path = e_fs->bot_root + "/scripts/" + e_lua->lua_file->getString();
@@ -34,6 +36,11 @@ ELuaState::ELuaState()
         throw ELuaError(state);
 
     //luaModules::startModules(state);
+}
+
+lua_State *ELuaState::getState()
+{
+    return state;
 }
 
 ELuaState::~ELuaState()

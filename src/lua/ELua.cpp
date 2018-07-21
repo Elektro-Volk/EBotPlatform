@@ -48,10 +48,28 @@ void ELua::reload()
 
 }
 
-void ELua::add(rapidjson::Value &msg)
+void ELua::add(string type, rapidjson::Value &msg)
 {
     if (state == nullptr) throw std::runtime_error("Lua is not working.");
-    pool->add(msg);
+    pool->add(type, msg);
+}
+
+void ELua::call(lua_State* L, int argnum, int retnum)
+{
+    if(lua_pcall(L, argnum, retnum, 0)) throw ELuaError(L);
+}
+
+
+bool ELua::safeCall(lua_State* L, int argnum, int retnum)
+{
+  try {
+      call(L, argnum, retnum);
+      return true;
+  }
+  catch (ELuaError& err) {
+      e_console->error("Lua", err.what());
+      return false;
+  }
 }
 
 ELua::~ELua()

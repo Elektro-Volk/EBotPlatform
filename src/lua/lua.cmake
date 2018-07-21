@@ -4,4 +4,5 @@ set( S_LUA
     ${LUA_PATH}/ELuaState.cpp
     ${LUA_PATH}/EThreadPool.cpp
     ${LUA_PATH}/EThreadPoolWorker.cpp
+    ${LUA_PATH}/ELuaJson.cpp
 )

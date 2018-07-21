@@ -87,10 +87,8 @@ void ELongPoll::processError(rapidjson::Document &err)
 
 void ELongPoll::processMessage(rapidjson::Value &upd)
 {
-  if(upd["type"] != "message_new") return; // This is not a message
-  e_console->log("LP", "Сообщение: " + std::to_string(upd["object"]["id"].GetInt()));
-
-  e_lua->add(upd["object"]);
+  e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
+  e_lua->add(upd["type"].GetString(), upd["object"]);
 }
 
 ELongPoll::~ELongPoll() {}

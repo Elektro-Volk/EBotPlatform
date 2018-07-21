@@ -27,7 +27,7 @@ public:
     std::vector<EThreadPoolWorker*> workers;
 
     EThreadPool();
-    void add(rapidjson::Value &msg);
+    void add(string type, rapidjson::Value &msg);
     ~EThreadPool();
 protected:
 

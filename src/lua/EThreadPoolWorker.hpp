@@ -17,10 +17,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
+#include "common.hpp"
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include "rapidjson/document.h"
+#include "luaheaders.hpp"
 
 class EThreadPoolWorker {
 private:
@@ -32,13 +34,13 @@ private:
     std::mutex mutex;
     std::thread thread;
 
-    //lua_State* L;
+    lua_State* L;
 
     void loop();
 public:
     EThreadPoolWorker();
     bool isBusy();
-    void add(rapidjson::Value &msg);
+    void add(string type, rapidjson::Value &msg);
     ~EThreadPoolWorker();
 protected:
 

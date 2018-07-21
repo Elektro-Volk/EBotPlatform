@@ -17,29 +17,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
-#include "core/ECvarSystem.hpp"
-#include "ELuaState.hpp"
-#include "EThreadPool.hpp"
+#include "rapidjson/document.h"
+#include "luaheaders.hpp"
 
-class ELua {
-private:
-public:
-    cvar lua_file = new Cvar("lua_file", "Lua main file", "main.lua");
-    cvar pool_count = new Cvar("pool_count", "Lua threads count", "1");
-
-    ELuaState *state;
-    EThreadPool *pool;
-
-    ELua();
-    void start();
-    void stop();
-    void reload();
-    void add(string type, rapidjson::Value &msg);
-    void call(lua_State* L, int argnum = 0, int retnum = 0);
-    bool safeCall(lua_State* L, int argnum = 0, int retnum = 0);
-    ~ELua();
-protected:
-
-};
-
-extern ELua *e_lua;
+namespace ELuaJson {
+    namespace C2L {
+        void pushObject(lua_State *L, const rapidjson::Value &j);
+        void pushArray(lua_State *L, const rapidjson::Value &array);
+        bool pushValue(lua_State *L, const rapidjson::Value &value);
+    }
+}
