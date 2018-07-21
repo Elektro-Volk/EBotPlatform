@@ -1,24 +1,12 @@
-//
-//  ELuaState.hpp
-//  EBotPlatform
-//
-//  Created by Elektro-Volk on 18/07/2018.
-//
-//
-
-#ifndef ELuaState_hpp
-#define ELuaState_hpp
-
-#include <stdio.h>
+#pragma once
+#include "luaheaders.hpp"
 
 class ELuaState {
 private:
+    lua_State *state;
 public:
     ELuaState();
     ~ELuaState();
 protected:
 
 };
-
-
-#endif /* ELuaState_hpp */

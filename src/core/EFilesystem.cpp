@@ -11,15 +11,15 @@ EFilesystem::EFilesystem()
 
 string EFilesystem::readAll(string path)
 {
-    std::ifstream file(path);
-    return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    std::ifstream file(bot_root + "/" + path);
+    return string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 }
 
 std::vector<string> EFilesystem::readLines(string path)
 {
     std::vector<string> result;
 
-    std::ifstream file(path);
+    std::ifstream file(bot_root + "/" + path);
     for(string line; getline(file, line);) result.push_back(line);
 
     return result;

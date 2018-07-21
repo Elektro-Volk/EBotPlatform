@@ -1,16 +1,9 @@
-//
-//  ECmd.cpp
-//  EGGIN
-//
-//  Created by Elektro-Volk on 02/07/2018.
-//
-//
-
 /* REWORK THIS!!! */
 
 #include "ECmd.hpp"
 #include "EConsole.hpp"
 #include "ECvarSystem.hpp"
+#include "EFilesystem.hpp"
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
@@ -83,18 +76,12 @@ ECmdArgs ECmd::parse(std::string text)
 
 void ECmd::exec(std::string cpath)
 {
-    std::ifstream fs(cpath);
-
-	std::string data;
-	std::string line;
-
-	 while (getline(fs, line))
+	std::vector<string> lines = e_fs->readLines("config.cfg");
+	 for (string line : lines)
 	 {
-		if (line == "" || line.front() == '#')
-			continue;
+		if (line == "" || line.front() == '#') continue;
 		exe(line);
 	}
-	fs.close();
 }
 
 ECmd::~ECmd()

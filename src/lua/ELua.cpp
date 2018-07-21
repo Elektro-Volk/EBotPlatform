@@ -19,6 +19,9 @@ void ELua::start()
         e_console->error("Lua", "При загрузке Lua скриптов возникла ошибка.");
         e_console->error("Lua", "Исправьте все ошибки и перезагрузите скрипты командой `relua`.");
         e_console->error("Lua", err.what());
+
+        if (state) delete state;
+        if (pool) delete pool;
     }
 }
 

@@ -16,7 +16,7 @@
 #define lock_new() LockNew()
 #define LSECT SECT*
 
-inline LSECT LockNew() {
+LSECT LockNew() {
 	LSECT s = (LSECT)malloc(sizeof(SECT));
 	lock_init(s);
 	return s;
