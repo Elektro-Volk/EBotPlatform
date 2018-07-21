@@ -33,3 +33,6 @@
 
 build
 build/
+
+#lua
+third_party/lua/build
