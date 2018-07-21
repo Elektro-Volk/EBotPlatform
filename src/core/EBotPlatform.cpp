@@ -10,6 +10,7 @@
 #include "EConsole.hpp"
 #include "ECmd.hpp"
 #include "ENet.hpp"
+#include "EFilesystem.hpp"
 #include "vk/EVkApi.hpp"
 #include "vk/ELongPoll.hpp"
 #include "lua/ELua.hpp"
@@ -28,6 +29,7 @@ int EBotPlatform::initEngine()
 {
     try {
         // Init Core
+        e_fs = new EFilesystem();
         e_console = new EConsole();
         e_cmd = new ECmd();
         e_net = new ENet();

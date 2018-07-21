@@ -1,18 +1,17 @@
-//
-//  EFilesystem.hpp
-//  EGGIN
-//
-//  Created by Elektro-Volk on 29/06/2018.
-//
-//
-
 #pragma once
-#include <string>
+#include "common.hpp"
 #include <vector>
 
-namespace EFilesystem {
-    std::string readAll(std::string path);
-    std::vector<std::string> readLines(std::string path);
-    void writeAll(std::string path, std::string data);
-    void writeLine(std::string path, std::string data);
+class EFilesystem {
+public:
+    string bot_root = "bot";
+
+    EFilesystem();
+    string readAll(string path);
+    std::vector<string> readLines(string path);
+    void writeAll(string path, string data);
+    void writeLine(string path, string data);
+    ~EFilesystem();
 };
+
+extern EFilesystem *e_fs;
