@@ -37,6 +37,7 @@ public:
 	ECmdArgs parse(string line);
 	bool exists(const string cmd_name);
 	void exec(const string cpath);
+    string data(std::vector<string> cmd_args, int sub);
     ~ECmd();
 };
 

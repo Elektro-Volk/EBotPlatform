@@ -19,12 +19,25 @@
 #include "EFilesystem.hpp"
 #include <fstream>
 #include <streambuf>
+#include <sys/stat.h>
+#include "dirent.h"
 
 EFilesystem *e_fs;
 
 EFilesystem::EFilesystem()
 {
     // TODO: get root from concmdparser
+}
+
+void EFilesystem::existsAssert(string path)
+{
+    if (!exists(path)) throw std::runtime_error("файл `" + path + "` не найден.");
+}
+
+bool EFilesystem::exists(string path)
+{
+    std::ifstream infile(bot_root + "/" + path);
+    return infile.good();
 }
 
 string EFilesystem::readAll(string path)
@@ -51,6 +64,37 @@ void EFilesystem::writeAll(string path, string data)
 void EFilesystem::writeLine(string path, string data)
 {
     // TODO
+}
+
+std::vector<string> EFilesystem::dirList(string _dir)
+{
+    std::vector<string> data;
+#ifdef __linux__
+    DIR *dir = opendir((_dir[0] == '/' ? _dir : bot_root + '/' + _dir).c_str());
+    if(dir)
+    {
+        struct dirent *ent;
+        while((ent = readdir(dir)) != NULL)
+        {
+            string f = ent->d_name;
+            if(f != "." && f != "..")
+            data.push_back(f);
+        }
+    }
+#else
+    string search_path = (_dir[0] == '/' ? _dir : bot_root + '/' + _dir) + "/*.*";
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
+    if(hFind != INVALID_HANDLE_VALUE) {
+        do {
+            if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
+                data.push_back(fd.cFileName);
+            }
+        }while(::FindNextFile(hFind, &fd));
+        ::FindClose(hFind);
+    }
+#endif
+    return data;
 }
 
 EFilesystem::~EFilesystem ()

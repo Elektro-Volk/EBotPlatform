@@ -11,12 +11,14 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "lu_other.h"
-#include "common.h"
-#include "lua/lua_json.h"
-#include "lua/luawork.h"
-#include "console.h"
-#include "vk/vkapi.h"
-#include "strutils.h"
+#include "common.hpp"
+#include "lua/ELuaJson.hpp"
+#include "lua/ELua.hpp"
+#include "core/EBotPlatform.hpp"
+#include "core/EFilesystem.hpp"
+#include "core/EConsole.hpp"
+#include "vk/EVkApi.hpp"
+#include "utils/strutils.hpp"
 #include <map>
 #include <thread>
 #include "lua/api/ln_vkapi.h"
@@ -29,11 +31,14 @@ void lu_other::init_api(lua_State *L)
   lua_register(L, "getId", lu_other::getId);
   lua_register(L, "addline", lu_other::addline);
   lua_register(L, "connect", lu_other::connect);
-  lua_register(L, "isFlag", lu_other::isFlag);
-  lua_register(L, "getPeer", lu_other::getPeer);
   lua_register(L, "resp", lu_other::resp);
-  lua_register(L, "isGroup", lu_other::isGroup);
-  lua_register(L, "getmsg", lu_other::getmsg);
+
+  luaL_loadstring(L, "function toint (str) return str and tonumber(str) and math.floor(tonumber(str)) end");
+  lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function ischat (msg) return msg.peer_id > 2000000000 end");
+  lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function getcid (msg) return msg.peer_id - 2000000000 end");
+  lua_pcall(L, 0, 0, 0);
 }
 
 int lu_other::randtable(lua_State *L)
@@ -50,15 +55,13 @@ int lu_other::randtable(lua_State *L)
 // int uptime()
 int lu_other::uptime(lua_State *L)
 {
-  lua_pushinteger(L, time(0)-startTime);
+  lua_pushinteger(L, time(0)-EBotPlatform::start_time);
   return 1;
 }
 
 int lu_other::relua(lua_State *L)
 {
-  con::log("Relua from lua...");
-  std::thread t(luawork::c_relua, vector<string>());
-  t.detach();
+  e_lua->reload();
   return 0;
 }
 
@@ -71,7 +74,7 @@ int lu_other::getId(lua_State *L)
 		url = tokens[tokens.size() - 1];
 	}
 
-	rapidjson::Value &result = vk::jSend("utils.resolveScreenName", {{"screen_name", url}})["response"];
+	rapidjson::Value &result = e_vkapi->jSend("utils.resolveScreenName", {{"screen_name", url}})["response"];
   if(!result.IsObject()) return 0;
 	if (result.HasMember("object_id")) lua_pushinteger(L, result["object_id"].GetInt()); else lua_pushnil(L);
 	return 1;
@@ -98,24 +101,9 @@ int lu_other::connect(lua_State *L)
 {
   const char *path = lua_tostring(L, 1);
 	lua_getglobal(L, "require");
-	lua_pushfstring(L, "%s/%s", bot_path.c_str(), path);
+	lua_pushfstring(L, "%s/%s", e_fs->bot_root.c_str(), path);
   if(lua_pcall(L, 1, -1, 0))
     luaL_error(L, lua_tostring(L, -1));
-	return 1;
-}
-
-// int uptime()
-int lu_other::isFlag(lua_State *L)
-{
-  lua_pushboolean(L, lua_tointeger(L, 1) & lua_tointeger(L, 2));
-	return 1;
-}
-
-// int uptime()
-int lu_other::getPeer(lua_State *L)
-{
-    luaL_checktype(L, 1, LUA_TTABLE);
-	lua_getfield(L, 1, "peer_id");
 	return 1;
 }
 
@@ -135,20 +123,4 @@ int lu_other::resp(lua_State *L)
     lua_remove(L, 1);
 	lua_insert(L, 1);// STR TAB
 	return ln_vkapi::vk_jSend(L);
-}
-
-int lu_other::isGroup(lua_State *L)
-{
-  lua_pushboolean(L, vk::groupmode->getBool());
-  return 1;
-}
-
-int lu_other::getmsg(lua_State *L)
-{
-  std::string id = to_string(luaL_checknumber(L, 1));
-
-	rapidjson::Document result = vk::jSend("messages.getById", {{"message_ids", id}});
-  if(!result.IsObject() || !result.HasMember("response")) return 0;
-	lua_json::pushValue(L, result["response"]["items"][0]);
-	return 1;
 }

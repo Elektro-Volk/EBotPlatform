@@ -21,6 +21,7 @@
 #include "luaheaders.hpp"
 
 namespace ELuaJson {
+    int decode(lua_State *L);
     namespace C2L {
         void pushObject(lua_State *L, const rapidjson::Value &j);
         void pushArray(lua_State *L, const rapidjson::Value &array);

@@ -11,10 +11,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "lu_json.h"
-#include "common.h"
-#include "lua/lua_json.h"
+#include "common.hpp"
+#include "lua/ELuaJson.hpp"
 
 void lu_json::init_api(lua_State *L)
 {
-  lua_register(L, "jDecode", lua_json::decode);
+  lua_register(L, "jDecode", ELuaJson::decode);
 }

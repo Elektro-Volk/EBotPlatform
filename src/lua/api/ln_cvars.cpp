@@ -11,8 +11,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_cvars.h"
-#include "common.h"
-#include "cvars.h"
+#include "common.hpp"
+#include "core/ECvarSystem.hpp"
 
 void ln_cvars::init_api(lua_State *L)
 {
@@ -27,18 +27,18 @@ void ln_cvars::init_api(lua_State *L)
 
 int ln_cvars::get(lua_State *L)
 {
-  lua_pushstring(L, cvars::get(luaL_checkstring(L, 1))->value.c_str());
+  lua_pushstring(L, e_cvars[luaL_checkstring(L, 1)]->getString().c_str());
   return 1;
 }
 
 int ln_cvars::set(lua_State *L)
 {
-  cvars::get(luaL_checkstring(L, 1))->setValue(luaL_checkstring(L, 2));
-  return 0;
+    e_cvars[luaL_checkstring(L, 1)]->setValue(luaL_checkstring(L, 2));
+    return 0;
 }
 
 int ln_cvars::exists(lua_State *L)
 {
-  lua_pushboolean(L, cvars::exists(luaL_checkstring(L, 1)));
-  return 0;
+    lua_pushboolean(L, e_cvars.find(luaL_checkstring(L, 1)) != e_cvars.end());
+    return 0;
 }

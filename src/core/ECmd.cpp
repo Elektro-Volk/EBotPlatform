@@ -61,7 +61,7 @@ void ECmd::exe(const std::string text)
         if (cmd_args.size() == 2) e_cvars[cmd_name]->setValue(cmd_args[1]);
         e_console->log("CMD", cmd_name + " = " + e_cvars[cmd_name]->getString());
     }
-    else e_console->log("CMDERROR", "Command " + cmd_name + " not found");
+    else e_console->error("CMD", "Command " + cmd_name + " not found");
 }
 
 ECmdArgs ECmd::parse(std::string text)
@@ -93,14 +93,26 @@ ECmdArgs ECmd::parse(std::string text)
 
 
 
-void ECmd::exec(std::string cpath)
+void ECmd::exec(string cpath)
 {
-	std::vector<string> lines = e_fs->readLines("config.cfg");
-	 for (string line : lines)
-	 {
+	e_fs->existsAssert(cpath);
+	std::vector<string> lines = e_fs->readLines(cpath);
+	for (string line : lines)
+	{
 		if (line == "" || line.front() == '#') continue;
 		exe(line);
 	}
+}
+
+string ECmd::data(std::vector<string> cmd_args, int sub)
+{
+	if (cmd_args.size() < sub) return "";
+	string ret = "";
+	for (int i = sub-1; i < cmd_args.size(); i++)
+	{
+		ret += " " + cmd_args[i];
+	}
+	return ret.substr(1);
 }
 
 ECmd::~ECmd()

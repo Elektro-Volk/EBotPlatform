@@ -22,6 +22,20 @@
 
 using namespace rapidjson;
 
+int ELuaJson::decode(lua_State *L)
+{
+  rapidjson::Document j;
+  rapidjson::ParseResult ok = j.Parse(luaL_checkstring(L, -1));
+  if(!ok) {
+     luaL_error(L, "JSON parse error: %s (%d)", rapidjson::GetParseError_En(ok.Code()), ok.Offset());
+     return 1;
+  }
+  lua_pop(L, 1);
+  ELuaJson::C2L::pushValue(L, j);
+  return 1;
+}
+
+
 void ELuaJson::C2L::pushObject(lua_State *L, const rapidjson::Value &j)
 {
     lua_newtable(L);

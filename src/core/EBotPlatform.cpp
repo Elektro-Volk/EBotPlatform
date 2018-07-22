@@ -27,6 +27,8 @@
 
 
 bool EBotPlatform::isWork = true;
+const string EBotPlatform::version = "1.0.0";
+const int EBotPlatform::start_time = time(0);
 
 int main()
 {
@@ -47,14 +49,13 @@ int EBotPlatform::initEngine()
         e_longpoll = new ELongPoll();
         e_lua = new ELua();
 
-        e_console->log("CORE", "EBotPlatform V1.0.0.");
+        e_console->log("CORE", "EBotPlatform V" + version);
         e_console->log("CORE", "Электро-Волк 2016-2018.");
 
         e_console->setEcho(false);
         e_cmd->exec("config.cfg");
         e_console->setEcho(true);
 
-        e_longpoll->start();
         e_lua->start();
     }
     catch (const std::runtime_error& error) {
@@ -67,6 +68,7 @@ int EBotPlatform::initEngine()
 void EBotPlatform::frame()
 {
     e_longpoll->frame();
+    e_lua->frame();
 }
 
 void EBotPlatform::shutdown()

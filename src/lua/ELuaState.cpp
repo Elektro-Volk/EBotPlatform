@@ -21,21 +21,23 @@
 #include "ELuaError.hpp"
 #include "core/EFilesystem.hpp"
 
+void init_lua_api(lua_State *L);
+
 ELuaState::ELuaState()
 {
-    //luaModules::load();
+    modules.load();
     state = luaL_newstate();
     luaL_openlibs(state);
-    //init_lua_api(state);
+    init_lua_api(state);
     lua_createtable(state, 0, 1);
     lua_setglobal(state, "vk_events");
 
-    //luaModules::loadModules(state);
+    modules.loadModules(state);
     string lua_path = e_fs->bot_root + "/scripts/" + e_lua->lua_file->getString();
     if(luaL_loadfile(state, lua_path.c_str()) || lua_pcall(state, 0, LUA_MULTRET, 0))
         throw ELuaError(state);
 
-    //luaModules::startModules(state);
+    modules.startModules(state);
 }
 
 lua_State *ELuaState::getState()
@@ -45,5 +47,5 @@ lua_State *ELuaState::getState()
 
 ELuaState::~ELuaState()
 {
-
+    modules.clearModules();
 }

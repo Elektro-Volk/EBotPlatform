@@ -18,9 +18,11 @@
 */
 #pragma once
 #include "luaheaders.hpp"
+#include "ELuaModules.hpp"
 
 class ELuaState {
 private:
+    ELuaModules modules;
     lua_State *state;
 public:
     ELuaState();

@@ -11,9 +11,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_vkapi.h"
-#include "common.h"
-#include "../lua_json.h"
-#include "vk/vkapi.h"
+#include "common.hpp"
+#include "lua/ELuaJson.hpp"
+#include "vk/EVkApi.hpp"
 
 void ln_vkapi::init_api(lua_State *L)
 {
@@ -50,21 +50,21 @@ int ln_vkapi::vk_send(lua_State *L)
   luaL_checktype(L, 2, LUA_TTABLE);
 
   lua_pushnil(L);
-  map<string, string> args;
+  std::map<string, string> args;
   while (lua_next(L, 2)) {
     lua_pushvalue(L, -2);
-    args.insert(pair<string, string>(luaL_checkstring(L, -1), luaL_checkstring(L, -2)));
+    args.insert({ luaL_checkstring(L, -1), luaL_checkstring(L, -2) });
     lua_pop(L, 2);
   }
 
-  lua_pushstring(L, vk::send(lua_tostring(L, 1), args).c_str());
+  lua_pushstring(L, e_vkapi->send(lua_tostring(L, 1), args).c_str());
   return 1;
 }
 
 /* table vk.jSend(method, params) */
 int ln_vkapi::vk_jSend(lua_State *L)
 {
-  ln_vkapi::vk_send(L); lua_json::decode(L);
+  ln_vkapi::vk_send(L); ELuaJson::decode(L);
   return 1;
 }
 

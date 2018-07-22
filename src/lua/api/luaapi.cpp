@@ -1,5 +1,7 @@
 #include "luaapi.h"
-#include "common.h"
+#include "common.hpp"
+#include "core/EBotPlatform.hpp"
+#include "core/EFilesystem.hpp"
 // Api INCLUDES
 #include "ln_vkapi.h"
 #include "ln_mysql.h"
@@ -25,6 +27,6 @@ void init_lua_api(lua_State *L)
   lu_json::init_api(L);
   lu_other::init_api(L);
 
-  lua_pushstring(L, _version.c_str()); lua_setglobal(L, "_VERSION");
-  lua_pushstring(L, bot_path.c_str()); lua_setglobal(L, "root");
+  lua_pushstring(L, EBotPlatform::version.c_str()); lua_setglobal(L, "_VERSION");
+  lua_pushstring(L, e_fs->bot_root.c_str()); lua_setglobal(L, "root");
 }

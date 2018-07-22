@@ -17,11 +17,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
-
-#include <stdio.h>
+#include "common.hpp"
 
 namespace EBotPlatform {
     extern bool isWork;
+    extern const string version;
+    extern const int start_time;
 
     int initEngine();
     void frame();

@@ -11,9 +11,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_console.h"
-#include "common.h"
-#include "console.h"
-#include "lua/luawork.h"
+#include "common.hpp"
+#include "core/EConsole.hpp"
+#include "lua/ELua.hpp"
 
 void ln_console::init_api(lua_State *L)
 {
@@ -25,20 +25,24 @@ void ln_console::init_api(lua_State *L)
   lua_setglobal(L, "console");
 }
 
-// void console.log(text)
+// void console.log(type, text, ...)
 int ln_console::log(lua_State *L)
 {
     lua_getglobal(L, "string");
-	lua_getfield(L,-1, "format");
-    lua_insert(L, 1);
-    luawork::safeCall(L, lua_gettop(L) - 1, 1);
-    con::log(luaL_checkstring(L, 1));
+	lua_getfield(L, -1, "format");
+    lua_insert(L, 2);
+    e_lua->safeCall(L, lua_gettop(L) - 2, 1);
+    e_console->log(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
     return 0;
 }
 
-// void console.log(text)
+// void console.log(type, text)
 int ln_console::error(lua_State *L)
 {
-  con::error(luaL_checkstring(L, 1));
-  return 0;
+    lua_getglobal(L, "string");
+    lua_getfield(L, -1, "format");
+    lua_insert(L, 2);
+    e_lua->safeCall(L, lua_gettop(L) - 2, 1);
+    e_console->error(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
+    return 0;
 }

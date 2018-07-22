@@ -11,8 +11,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_fs.h"
-#include "common.h"
-#include "filesystem.h"
+#include "common.hpp"
+#include "core/EFilesystem.hpp"
 
 void ln_fs::init_api(lua_State *L)
 {
@@ -31,19 +31,19 @@ void ln_fs::init_api(lua_State *L)
 
 int ln_fs::exists(lua_State *L)
 {
-  lua_pushboolean(L, fs::exists(luaL_checkstring(L, 1)));
+  lua_pushboolean(L, e_fs->exists(luaL_checkstring(L, 1)));
   return 1;
 }
 
 int ln_fs::read(lua_State *L)
 {
-  lua_pushfstring(L, fs::read(luaL_checkstring(L, 1)).c_str());
+  lua_pushfstring(L, e_fs->readAll(luaL_checkstring(L, 1)).c_str());
   return 1;
 }
 
 int ln_fs::readLines(lua_State *L)
 {
-  vector<string> lines = fs::readLines(luaL_checkstring(L, 1));
+  std::vector<string> lines = e_fs->readLines(luaL_checkstring(L, 1));
   lua_newtable(L);
   for (int i = 0; i < lines.size(); i++) {
     lua_pushinteger(L, i + 1);
@@ -55,7 +55,7 @@ int ln_fs::readLines(lua_State *L)
 
 int ln_fs::write(lua_State *L)
 {
-  fs::write(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
+  e_fs->writeAll(luaL_checkstring(L, 1), luaL_checkstring(L, 2));
   return 0;
 }
 
@@ -66,7 +66,7 @@ int ln_fs::writeLines(lua_State *L)
 
 int ln_fs::dirList(lua_State *L)
 {
-  vector<string> data = fs::dirList(luaL_checkstring(L, 1));
+  std::vector<string> data = e_fs->dirList(luaL_checkstring(L, 1));
   lua_newtable(L);
   for (int i = 0; i < data.size(); i++) {
     lua_pushinteger(L, i + 1);

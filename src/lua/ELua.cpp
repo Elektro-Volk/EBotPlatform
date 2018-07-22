@@ -18,6 +18,7 @@
 */
 #include "ELua.hpp"
 #include "core/EConsole.hpp"
+#include "vk/ELongPoll.hpp"
 #include "ELuaError.hpp"
 
 ELua *e_lua;
@@ -32,6 +33,9 @@ void ELua::start()
     try {
         state = new ELuaState();
         pool = new EThreadPool();
+
+        e_longpoll->start();
+        e_console->log("Lua", "Скрипты были успешно запущены.");
     }
     catch (ELuaError& err) {
         e_console->error("Lua", "При загрузке Lua скриптов возникла ошибка.");
@@ -43,14 +47,34 @@ void ELua::start()
     }
 }
 
-void ELua::reload()
+void ELua::forceReload()
 {
 
+    to_reload = false;
+    e_console->log("Lua", "Перезагрузка скриптов и модулей...");
+
+    e_longpoll->stop();
+    if (pool) delete pool;
+    if (state) delete state;
+
+    start();
+}
+
+void ELua::reload()
+{
+    if (to_reload) return e_console->error("Lua", "Перезагрузка уже воспроизводится в текущее время.");
+
+    to_reload = true;
+    e_console->log("Lua", "Ожидание кадра для перезагрузки скриптов.");
+}
+
+void ELua::frame()
+{
+    if(to_reload) forceReload();
 }
 
 void ELua::add(string type, rapidjson::Value &msg)
 {
-    if (state == nullptr) throw std::runtime_error("Lua is not working.");
     pool->add(type, msg);
 }
 

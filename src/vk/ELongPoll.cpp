@@ -34,7 +34,6 @@ ELongPoll::ELongPoll()
 
 void ELongPoll::start()
 {
-    this->getServer();
     isWork = true;
 }
 
@@ -45,18 +44,26 @@ void ELongPoll::stop()
 
 void ELongPoll::getServer()
 {
-    e_console->log("LP", "Получение LongPoll сервера...");
+    try {
+        e_console->log("LP", "Получение LongPoll сервера...");
 
-	Document document = e_vkapi->jSend("groups.getLongPollServer", {{ "group_id", e_vkapi->vk_groupid->getString() }});
-    if(document.HasMember("error")) throw std::runtime_error(document["error"]["error_msg"].GetString());
+    	Document document = e_vkapi->jSend("groups.getLongPollServer", {{ "group_id", e_vkapi->vk_groupid->getString() }});
+        if(document.HasMember("error")) throw std::runtime_error(document["error"]["error_msg"].GetString());
 
-    Value &data = document["response"];
-	server = data["server"].GetString();
-	params["act"] = "a_check";
-	params["key"] = data["key"].GetString();
-	params["ts"] = std::to_string(data["ts"].GetInt());
+        Value &data = document["response"];
+    	server = data["server"].GetString();
+    	params["act"] = "a_check";
+    	params["wait"] = "1";
+    	params["key"] = data["key"].GetString();
+    	params["ts"] = std::to_string(data["ts"].GetInt());
 
-    e_console->log("LP", "LongPoll сервер получен.");
+        e_console->log("LP", "LongPoll сервер получен.");
+    }
+    catch (ENetException &err) {
+        e_console->error("LP", "Произошла сетевая ошибка:");
+        e_console->error("LP", err.what());
+        throw std::runtime_error(err.what());
+    }
 }
 
 void ELongPoll::frame()
@@ -65,6 +72,8 @@ void ELongPoll::frame()
         std::this_thread::yield(); // CPU 100% hack :)
         return;
     }
+
+    if (server == "") this->getServer();
 
     Document data;
 	data.Parse(e_net->sendPost(server, params).c_str());

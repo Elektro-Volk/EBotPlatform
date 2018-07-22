@@ -25,10 +25,13 @@ public:
     string bot_root = "bot";
 
     EFilesystem();
+    void existsAssert(string path);
+    bool exists(string path);
     string readAll(string path);
     std::vector<string> readLines(string path);
     void writeAll(string path, string data);
     void writeLine(string path, string data);
+    std::vector<string> dirList(string _dir);
     ~EFilesystem();
 };
 

@@ -24,4 +24,4 @@ include( src/vk/vk.cmake )
 include( src/lua/lua.cmake )
 
 add_executable(EBP ${S_UTILS} ${S_CORE} ${S_VK} ${S_LUA} )
-target_link_libraries(EBP ${CURL_LIBRARIES} dl pthread lua)
+target_link_libraries(EBP ${CURL_LIBRARIES} mysqlclient dl pthread lua)

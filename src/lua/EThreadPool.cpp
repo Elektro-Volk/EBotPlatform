@@ -47,5 +47,7 @@ void EThreadPool::add(string type, rapidjson::Value &msg)
 
 EThreadPool::~EThreadPool()
 {
-
+    for(int i = 0; i < workers.size(); i++) {
+        delete workers[i];
+    }
 }

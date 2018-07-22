@@ -17,32 +17,23 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
-#include "core/ECvarSystem.hpp"
-#include "ELuaState.hpp"
-#include "EThreadPool.hpp"
+#include "common.hpp"
+#include "luaheaders.hpp"
+#include <vector>
 
-class ELua {
+struct ELuaModulesModule { string name; bool isLoaded; };
+
+class ELuaModules {
 private:
 public:
-    cvar lua_file = new Cvar("lua_file", "Lua main file", "main.lua");
-    cvar pool_count = new Cvar("pool_count", "Lua threads count", "1");
+    std::vector<ELuaModulesModule> modules;
 
-    ELuaState *state;
-    EThreadPool *pool;
-    bool to_reload = false;
-
-    ELua();
-    void start();
-    void stop();
-    void forceReload();
-    void reload();
-    void frame();
-    void add(string type, rapidjson::Value &msg);
-    void call(lua_State* L, int argnum = 0, int retnum = 0);
-    bool safeCall(lua_State* L, int argnum = 0, int retnum = 0);
-    ~ELua();
+    ELuaModules();
+    void loadModules(lua_State *L);
+    void clearModules();
+    void startModules(lua_State *L);
+    void load();
+    ~ELuaModules();
 protected:
 
 };
-
-extern ELua *e_lua;

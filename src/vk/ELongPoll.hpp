@@ -25,7 +25,7 @@ class ELongPoll {
 private:
     bool isWork = false;
     std::map<string, string> params;
-    string server;
+    string server = "";
 
     void getServer();
     void processError(rapidjson::Document &err);

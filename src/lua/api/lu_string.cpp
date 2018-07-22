@@ -11,8 +11,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "lu_string.h"
-#include "common.h"
-#include "strutils.h"
+#include "common.hpp"
+#include "utils/strutils.hpp"
 #include <cstring>
 
 void lu_string::init_api(lua_State *L)
@@ -20,6 +20,7 @@ void lu_string::init_api(lua_State *L)
   lua_getglobal(L, "string");
 
   luaapi_tablefunc(L, lu_string::starts, "starts");
+  luaapi_tablefunc(L, lu_string::ends, "ends");
   luaapi_tablefunc(L, lu_string::lower, "lower");
   luaapi_tablefunc(L, lu_string::upper, "upper");
   luaapi_tablefunc(L, lu_string::split, "split");
@@ -31,6 +32,13 @@ void lu_string::init_api(lua_State *L)
 int lu_string::starts(lua_State *L)
 {
   lua_pushboolean(L, strutils::starts(luaL_checkstring(L, 1), luaL_checkstring(L, 2)));
+  return 1;
+}
+
+// bool string.ends(str, pref)
+int lu_string::ends(lua_State *L)
+{
+  lua_pushboolean(L, strutils::ends(luaL_checkstring(L, 1), luaL_checkstring(L, 2)));
   return 1;
 }
 

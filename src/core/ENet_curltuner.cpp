@@ -22,7 +22,7 @@
 
 curltuner::curltuner(std::string url)
 {
-    handle = e_net->handles[std::this_thread::get_id()];
+    handle = e_net->handles[std::this_thread::get_id()]->handle;
     e_net->setup_curl(handle, &buffer);
     curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
 }

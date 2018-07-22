@@ -11,9 +11,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_cmd.h"
-#include "common.h"
-#include "../lua_json.h"
-#include "cmd.h"
+#include "common.hpp"
+#include "lua/ELuaJson.hpp"
+#include "core/ECmd.hpp"
+#include <vector>;
 
 void ln_cmd::init_api(lua_State *L)
 {
@@ -31,32 +32,33 @@ void ln_cmd::init_api(lua_State *L)
 // void exec (path)
 int ln_cmd::exec(lua_State * L)
 {
-	const char *path = luaL_checkstring(L, 1);
-	cmd::exec(path);
-	return 0;
+    try {
+    	e_cmd->exec(luaL_checkstring(L, 1));
+    	return 0;
+    }
+    catch (const std::runtime_error& error) {
+        luaL_error(L, error.what());
+    }
 }
 
 // bool exists (cmd_name)
 int ln_cmd::exists(lua_State * L)
 {
-	const char *cmd_name = luaL_checkstring(L, 1);
-	lua_pushboolean(L, cmd::exists(cmd_name));
+	lua_pushboolean(L, e_cmd->exists(luaL_checkstring(L, 1)));
 	return 1;
 }
 
 // string exe (cmd_name)
 int ln_cmd::exe(lua_State * L)
 {
-	const char *cmd_name = luaL_checkstring(L, 1);
-	lua_pushstring(L, cmd::exe(cmd_name).c_str());
-	return 1;
+	e_cmd->exe(luaL_checkstring(L, 1));
+	return 0;
 }
 
 // table parse (line)
 int ln_cmd::parse(lua_State * L)
 {
-	const char *line = luaL_checkstring(L, 1);
-	auto parsed = cmd::parse(line);
+	auto parsed = e_cmd->parse(luaL_checkstring(L, 1));
 
 	lua_newtable(L);
 	for (int i = 0; i < parsed.size(); i++) {
@@ -73,7 +75,7 @@ int ln_cmd::data(lua_State * L)
   luaL_checktype(L, 1, LUA_TTABLE);
   int offset = luaL_checkinteger(L, 2);
 
-	vector<string> args;
+	std::vector<string> args;
 	lua_pushnil(L);
 	while (lua_next(L, 1))
 	{
@@ -81,7 +83,7 @@ int ln_cmd::data(lua_State * L)
 		args.push_back(luaL_checkstring(L, -1));
 		lua_pop(L, 2);
 	}
-	lua_pushstring(L, cmd::data(args, offset).c_str());
+	lua_pushstring(L, e_cmd->data(args, offset).c_str());
 
 	return 1;
 }

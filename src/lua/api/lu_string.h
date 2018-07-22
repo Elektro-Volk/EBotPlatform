@@ -17,6 +17,7 @@ namespace lu_string {
   void init_api(lua_State *L);
 
   int starts(lua_State *L);
+  int ends(lua_State *L);
   int lower(lua_State *L);
   int upper(lua_State *L);
   int split(lua_State *L);
