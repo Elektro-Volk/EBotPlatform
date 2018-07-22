@@ -21,6 +21,12 @@ script:
     - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
     - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
     - gcc --version
+    - cd third_party/lua
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+    - cd ../../..
     - mkdir build
     - cd build
     - cmake ..
