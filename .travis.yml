@@ -13,6 +13,7 @@ addons:
   apt:
     sources:
     packages:
+        - libstdc++
 
 script:
     # скрипт сборки и тестирования проекта:
