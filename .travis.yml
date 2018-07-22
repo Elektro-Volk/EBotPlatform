@@ -1,5 +1,5 @@
 dist:     trusty    # используем Ubuntu 14.04 Trusty Tahr (а не 12.02 Precise Pangolin)
-sudo:     false
+sudo:     true
 
 language: cpp
 
