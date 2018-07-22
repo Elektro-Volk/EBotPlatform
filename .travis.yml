@@ -1,5 +1,5 @@
 dist:     trusty    # используем Ubuntu 14.04 Trusty Tahr (а не 12.02 Precise Pangolin)
-sudo:     required  # используем Virtual Machine (а не Docker container)
+sudo:     false
 
 language: cpp
 
@@ -8,6 +8,12 @@ os:
 
 compiler:
     - gcc
+
+addons:
+  apt:
+    sources:
+    packages:
+        - g++-4.9
 
 script:
     # скрипт сборки и тестирования проекта:
