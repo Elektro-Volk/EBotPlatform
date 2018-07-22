@@ -1,5 +1,5 @@
 dist:     trusty    # используем Ubuntu 14.04 Trusty Tahr (а не 12.02 Precise Pangolin)
-sudo:     true
+sudo:     required
 
 language: cpp
 
@@ -12,11 +12,15 @@ compiler:
 addons:
   apt:
     sources:
+    - ubuntu-toolchain-r-test
     packages:
-        - libstdc++
+    - gcc-6
+    - g++-6
 
 script:
-    # скрипт сборки и тестирования проекта:
+    - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
+    - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-6 /usr/bin/g++
+    - gcc --version
     - mkdir build
     - cd build
     - cmake ..
