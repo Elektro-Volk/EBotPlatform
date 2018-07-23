@@ -96,7 +96,7 @@ void ELongPoll::processError(rapidjson::Document &err)
 
 void ELongPoll::processMessage(rapidjson::Value &upd)
 {
-  e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
+  //e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
   e_lua->add(upd["type"].GetString(), upd["object"]);
 }
 
