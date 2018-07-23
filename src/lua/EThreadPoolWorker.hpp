@@ -38,7 +38,7 @@ private:
 
     void loop();
 public:
-    EThreadPoolWorker();
+    EThreadPoolWorker(int id);
     bool isBusy();
     void add(string type, rapidjson::Value &msg);
     ~EThreadPoolWorker();

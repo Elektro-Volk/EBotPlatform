@@ -23,10 +23,10 @@
 #include "ELuaError.hpp"
 #include "ELuaJson.hpp"
 
-EThreadPoolWorker::EThreadPoolWorker()
+EThreadPoolWorker::EThreadPoolWorker(int tid)
 :enabled(true), busy(false), thread(&EThreadPoolWorker::loop, this)
 {
-    id[0] = e_lua->pool->nWorkers++;
+    id[0] = tid;
 	L = lua_newthread(e_lua->state->getState());
     lua_setfield(e_lua->state->getState(), LUA_REGISTRYINDEX, id);
 }
