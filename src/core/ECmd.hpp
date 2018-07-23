@@ -22,15 +22,15 @@
 #include <map>
 
 typedef std::vector<string> ECmdArgs;
-typedef string (*ECmdFunction)(ECmdArgs args);
+typedef void (*ECmdFunction)(ECmdArgs args);
 
 struct ECmdCommand
 { string name; ECmdFunction function; string desc; };
 
 class ECmd {
-private:
-    std::map<string, ECmdCommand> commands;
 public:
+    std::map<string, ECmdCommand> commands;
+
     ECmd();
 	void add(string cmd_name, ECmdFunction function, string cmd_desc);
 	void exe(string text);
@@ -38,6 +38,7 @@ public:
 	bool exists(const string cmd_name);
 	void exec(const string cpath);
     string data(std::vector<string> cmd_args, int sub);
+    void readLoop();
     ~ECmd();
 };
 

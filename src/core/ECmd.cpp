@@ -21,18 +21,29 @@
 
 #include "ECmd.hpp"
 #include "EConsole.hpp"
+#include "EBotPlatform.hpp"
 #include "ECvarSystem.hpp"
 #include "EFilesystem.hpp"
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <thread>
 
 ECmd* e_cmd;
 
+void cmd_help(std::vector<string> args)
+{
+	e_console->log("CMD", "Список команд EBotPlatform V" + EBotPlatform::version);
+	for (auto cmd : e_cmd->commands) {
+		e_console->log("CMD", cmd.first + " - " + cmd.second.desc);
+	}
+}
+
 ECmd::ECmd()
 {
-
+	std::thread(&ECmd::readLoop, this).detach();
+	add ("help", cmd_help, "вывод всех команд EBP");
 }
 
 bool ECmd::exists(const std::string cmd_name)
@@ -61,7 +72,7 @@ void ECmd::exe(const std::string text)
         if (cmd_args.size() == 2) e_cvars[cmd_name]->setValue(cmd_args[1]);
         e_console->log("CMD", cmd_name + " = " + e_cvars[cmd_name]->getString());
     }
-    else e_console->error("CMD", "Command " + cmd_name + " not found");
+    else e_console->error("CMD", "Команда `" + cmd_name + "` не найдена");
 }
 
 ECmdArgs ECmd::parse(std::string text)
@@ -113,6 +124,11 @@ string ECmd::data(std::vector<string> cmd_args, int sub)
 		ret += " " + cmd_args[i];
 	}
 	return ret.substr(1);
+}
+
+void ECmd::readLoop()
+{
+	for (string line; true; std::getline(std::cin, line)) exe(line);
 }
 
 ECmd::~ECmd()
