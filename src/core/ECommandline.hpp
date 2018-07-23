@@ -17,14 +17,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
+#include <map>
 #include "common.hpp"
 
-namespace EBotPlatform {
-    extern bool isWork;
-    extern const string version;
-    extern const int start_time;
+class ECommandline {
+private:
+    std::map<string, string> params;
+public:
+    ECommandline(int argc, char *argv[]);
+    string getValue(string param, string def);
+    ~ECommandline();
+protected:
 
-    int initEngine(int argc, char *argv[]);
-    void frame();
-    void shutdown();
 };
+
+extern ECommandline *e_commandline;

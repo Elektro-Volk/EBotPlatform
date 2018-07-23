@@ -17,6 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "EBotPlatform.hpp"
+#include "ECommandline.hpp"
 #include "EConsole.hpp"
 #include "ECmd.hpp"
 #include "ENet.hpp"
@@ -30,19 +31,20 @@ bool EBotPlatform::isWork = true;
 const string EBotPlatform::version = "1.0.0";
 const int EBotPlatform::start_time = time(0);
 
-int main()
+int main(int argc, char *argv[])
 {
-    EBotPlatform::initEngine();
+    EBotPlatform::initEngine(argc, argv);
     while (EBotPlatform::isWork) { EBotPlatform::frame(); }
     return 0;
 }
 
-int EBotPlatform::initEngine()
+int EBotPlatform::initEngine(int argc, char *argv[])
 {
     try {
         // Init Core
-        e_fs = new EFilesystem();
+        e_commandline = new ECommandline(argc, argv);
         e_console = new EConsole();
+        e_fs = new EFilesystem();
         e_cmd = new ECmd();
         e_net = new ENet();
         e_vkapi = new EVkApi();
@@ -59,6 +61,7 @@ int EBotPlatform::initEngine()
         e_lua->start();
     }
     catch (const std::runtime_error& error) {
+        e_console->setEcho(true);
         e_console->error("CRASH", error.what());
         EBotPlatform::shutdown();
     }

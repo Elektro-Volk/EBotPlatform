@@ -16,15 +16,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
-#include "common.hpp"
+#include "ECommandline.hpp"
+#include "EConsole.hpp"
 
-namespace EBotPlatform {
-    extern bool isWork;
-    extern const string version;
-    extern const int start_time;
+ECommandline *e_commandline;
 
-    int initEngine(int argc, char *argv[]);
-    void frame();
-    void shutdown();
-};
+ECommandline::ECommandline(int argc, char *argv[])
+{
+    string param = "";
+    for (int i = 0; i < argc; i++) {
+        if (argv[i][0] == '-') { // Param
+            param = string(argv[i]).substr(1);
+            continue;
+        }
+
+        if (param != "") {
+            params.insert ({ param, string(argv[i]) });
+            param = "";
+        }
+    }
+}
+
+string ECommandline::getValue(string param, string def)
+{
+    if (params.find(param) == params.end()) return def;
+    return params[param];
+}
+
+ECommandline::~ECommandline()
+{
+
+}

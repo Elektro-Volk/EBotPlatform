@@ -17,6 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "EFilesystem.hpp"
+#include "ECommandline.hpp"
 #include <fstream>
 #include <streambuf>
 #include <sys/stat.h>
@@ -26,7 +27,7 @@ EFilesystem *e_fs;
 
 EFilesystem::EFilesystem()
 {
-    // TODO: get root from concmdparser
+    bot_root = e_commandline->getValue("bot", "bot");
 }
 
 void EFilesystem::existsAssert(string path)
