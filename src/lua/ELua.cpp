@@ -17,15 +17,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "ELua.hpp"
+#include "core/ECmd.hpp"
 #include "core/EConsole.hpp"
 #include "vk/ELongPoll.hpp"
 #include "ELuaError.hpp"
 
 ELua *e_lua;
 
+void cmd_relua(std::vector<string> args)
+{
+	e_lua->reload();
+}
+
 ELua::ELua()
 {
-
+    e_cmd->add("relua", cmd_relua, "перезагрузить Lua скрипты");
 }
 
 void ELua::start()
