@@ -14,7 +14,7 @@ GNU General Public License for more details.
 #include "common.hpp"
 #include "lua/ELuaJson.hpp"
 #include "core/ECmd.hpp"
-#include <vector>;
+#include <vector>
 
 void ln_cmd::init_api(lua_State *L)
 {
