@@ -87,7 +87,7 @@ int ln_mysql::execute(lua_State* L)
 
   	// Do SQL query
   	std::lock_guard<std::mutex> locker(object->m_lock);
-  	if (mysql_query(mysql, query)) luaL_error(L, mysql_error(mysql));
+  	if (mysql_query(mysql, query)) { object->m_lock.unlock(); luaL_error(L, mysql_error(mysql)); };
 	MYSQL_RES *res = mysql_store_result(mysql);
 	if (!res) return 0; // null response
 

@@ -47,7 +47,6 @@ private:
 public:
     std::thread::id main_thread_id  = std::this_thread::get_id();
     std::map<std::thread::id, CurlHandle*> handles;
-    CURLSH* m_curlShareHandle;
 
     ENet();
     string urlEncode(string str);
