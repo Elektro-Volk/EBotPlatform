@@ -55,12 +55,12 @@ void ELuaModules::startModules(lua_State *L)
     for (auto it = modules.begin(); it != modules.end(); ++it)
 	{
 		lua_getglobal(L, it->name.c_str());
-        lua_getfield(L, -1, "CheckInstall");
+        lua_getfield(L, -1, "check_install");
         if(!lua_isnil(L, -1) && lua_pcall(L, 0, LUA_MULTRET, 0))
             e_console->error("Lua::" + it->name, lua_tostring(L, -1));
 
         lua_getglobal(L, it->name.c_str());
-        lua_getfield(L, -1, "Start");
+        lua_getfield(L, -1, "start");
         if(!lua_isnil(L, -1) && lua_pcall(L, 0, LUA_MULTRET, 0))
             e_console->error("Lua::" + it->name, lua_tostring(L, -1));
 		lua_settop(L, 0);

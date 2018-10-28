@@ -20,10 +20,10 @@ void ln_fs::init_api(lua_State *L)
 
   luaapi_tablefunc(L, ln_fs::exists, "exists");
   luaapi_tablefunc(L, ln_fs::read, "read");
-  luaapi_tablefunc(L, ln_fs::readLines, "readLines");
+  luaapi_tablefunc(L, ln_fs::readLines, "read_lines");
   luaapi_tablefunc(L, ln_fs::write, "write");
-  luaapi_tablefunc(L, ln_fs::writeLines, "writeLines");
-  luaapi_tablefunc(L, ln_fs::dirList, "dirList");
+  luaapi_tablefunc(L, ln_fs::writeLines, "write_lines");
+  luaapi_tablefunc(L, ln_fs::dirList, "dir_list");
 
   lua_setglobal(L, "fs");
 }

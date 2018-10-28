@@ -65,6 +65,7 @@ int ln_mysql::connect(lua_State* L)
 int ln_mysql::execute(lua_State* L)
 {
 	mysql_object *object = (mysql_object*)luaL_checkudata(L, 1, "mysql_connection");
+	std::lock_guard<std::mutex> locker(object->m_lock);
 	const char* query = luaL_checkstring(L, 2);
 
 	// Prepare query
@@ -86,8 +87,7 @@ int ln_mysql::execute(lua_State* L)
 	lua_settop(L, 0);
 
   	// Do SQL query
-  	std::lock_guard<std::mutex> locker(object->m_lock);
-  	if (mysql_query(mysql, query)) { object->m_lock.unlock(); luaL_error(L, mysql_error(mysql)); };
+  	if (mysql_query(mysql, query)) { object->m_lock.unlock(); luaL_error(L, "%s [%s]", mysql_error(mysql), query); };
 	MYSQL_RES *res = mysql_store_result(mysql);
 	if (!res) return 0; // null response
 

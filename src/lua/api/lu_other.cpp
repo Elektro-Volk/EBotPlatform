@@ -39,6 +39,14 @@ void lu_other::init_api(lua_State *L)
   lua_pcall(L, 0, 0, 0);
   luaL_loadstring(L, "function getcid (msg) return msg.peer_id - 2000000000 end");
   lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function math.pow (value) return value * value end");
+  lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function oneb (rmsg, str, ...) rmsg.keyboard = string.format([[{\"one_time\": true,\"buttons\": [ [{\"action\": {\"type\": \"text\",\"label\": \"]] .. str .. [[\"},\"color\": \"default\"}] ]}]], ...) end");
+  lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function dolist (list, ...) for i = 1, #list do  local res = list[i](...);   if res==false then return false end end  return true; end");
+  lua_pcall(L, 0, 0, 0);
+  luaL_loadstring(L, "function comma_value(n) local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')  return left..(num:reverse():gsub('(%d%d%d)','%1\\''):reverse())..right end");
+  lua_pcall(L, 0, 0, 0);
 }
 
 int lu_other::randtable(lua_State *L)
