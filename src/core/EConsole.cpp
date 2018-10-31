@@ -56,7 +56,7 @@ string EConsole::getBuffer()
 	return echo_buffer.str();
 }
 
-#ifdef _linux_
+#ifdef __linux__
 #define __write_w32(a, b) a<<b
 #endif
 
