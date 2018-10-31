@@ -21,7 +21,11 @@
 #include <fstream>
 #include <streambuf>
 #include <sys/stat.h>
-#include "dirent.h"
+#ifdef __linux__
+	#include "dirent.h"
+#else
+	#include "windows.h"
+#endif
 
 EFilesystem *e_fs;
 
@@ -88,7 +92,8 @@ std::vector<string> EFilesystem::dirList(string _dir)
     HANDLE hFind = ::FindFirstFile(search_path.c_str(), &fd);
     if(hFind != INVALID_HANDLE_VALUE) {
         do {
-            if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) {
+			if (lstrcmp(fd.cFileName, ".") != 0)
+				if (lstrcmp(fd.cFileName, "..") != 0) {
                 data.push_back(fd.cFileName);
             }
         }while(::FindNextFile(hFind, &fd));

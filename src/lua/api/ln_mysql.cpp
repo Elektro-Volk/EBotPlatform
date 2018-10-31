@@ -11,7 +11,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 */
 #include "ln_mysql.h"
-#include <mysql/mysql.h>
+#ifdef __linux__
+	#include <mysql/mysql.h>
+#else
+	#include "mysql.h"
+#endif
+
 #include "lua/ELua.hpp"
 #include <mutex>
 

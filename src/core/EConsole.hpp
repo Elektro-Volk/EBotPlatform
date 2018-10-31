@@ -30,6 +30,7 @@ public:
 	string getBuffer();
     void log(std::string type, std::string text);
     void error(std::string type, std::string text);
+	void print(std::string text);
     ~EConsole();
 protected:
 

@@ -18,6 +18,11 @@
 */
 #include "EConsole.hpp"
 #include <iostream>
+#include <ctime>
+#ifdef _WIN32
+	int __write_w32(FILE* fp, const char* buf);
+	#include "windows.h"
+#endif
 
 EConsole* e_console;
 
@@ -55,20 +60,24 @@ string EConsole::getBuffer()
 // type - message type | text - message
 void EConsole::log(std::string type, std::string text)
 {
-    (isEcho ? std::cout : echo_buffer)
-        << "\x1b[34m[\x1b[34;1m" << currentDateTime() << "\x1b[0;34m]"
-        << " [\x1b[34;1m" << type << "\x1b[0;34m] "
-        << "\x1b[0m" << text
-        << std::endl;
+	std::string str = "\x1b[34m[\x1b[34;1m" + currentDateTime() + "\x1b[0;34m]" + " [\x1b[34;1m" + type + "\x1b[0;34m] " + "\x1b[0m" + text + "\n";
+	if (isEcho)
+		__write_w32(stdout, str.c_str());
+	else
+		echo_buffer << str;
 }
 
 void EConsole::error(std::string type, std::string text)
 {
-    (isEcho ? std::cerr : echo_buffer)
-        << "\x1b[34m[\x1b[34;1m" << currentDateTime() << "\x1b[0;34m]"
-        << " [\x1b[31;5m" << type << "\x1b[0;34m] "
-        << "\x1b[0m" << text
-        << std::endl;
+	std::string str = "\x1b[34m[\x1b[34;1m" + currentDateTime() + "\x1b[0;34m]" + " [\x1b[31;5m" + type + "\x1b[0;34m] " + "\x1b[0m" + text + "\n";
+	if (isEcho)
+		__write_w32(stdout, str.c_str());
+	else
+		echo_buffer << str;
+}
+
+void EConsole::print(std::string text)
+{
 }
 
 /* Shutdown console and log */

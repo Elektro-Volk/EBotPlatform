@@ -28,11 +28,16 @@
 
 
 bool EBotPlatform::isWork = true;
-const string EBotPlatform::version = "1.0.0";
+const string EBotPlatform::version = "18.10a";
 const int EBotPlatform::start_time = time(0);
 
 int main(int argc, char *argv[])
 {
+#ifndef __linux__
+	std::locale::global(std::locale("ru_RU.UTF-8"));
+	SetConsoleOutputCP(65001);
+	SetConsoleCP(65001);
+#endif
     EBotPlatform::initEngine(argc, argv);
     while (EBotPlatform::isWork) { EBotPlatform::frame(); }
     return 0;
