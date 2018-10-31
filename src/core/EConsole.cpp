@@ -56,9 +56,7 @@ string EConsole::getBuffer()
 	return echo_buffer.str();
 }
 
-#ifdef __linux__
-#define __write_w32(a, b) a<<b
-#endif
+
 
 /* Log message to console */
 // type - message type | text - message
@@ -66,7 +64,11 @@ void EConsole::log(std::string type, std::string text)
 {
 	std::string str = "\x1b[34m[\x1b[34;1m" + currentDateTime() + "\x1b[0;34m]" + " [\x1b[34;1m" + type + "\x1b[0;34m] " + "\x1b[0m" + text + "\n";
 	if (isEcho)
+#ifdef __linux__
+		std::cout << str;
+#else
 		__write_w32(stdout, str.c_str());
+#endif
 	else
 		echo_buffer << str;
 }
@@ -75,7 +77,11 @@ void EConsole::error(std::string type, std::string text)
 {
 	std::string str = "\x1b[34m[\x1b[34;1m" + currentDateTime() + "\x1b[0;34m]" + " [\x1b[31;5m" + type + "\x1b[0;34m] " + "\x1b[0m" + text + "\n";
 	if (isEcho)
+#ifdef __linux__
+		std::cout << str;
+#else
 		__write_w32(stdout, str.c_str());
+#endif
 	else
 		echo_buffer << str;
 }
