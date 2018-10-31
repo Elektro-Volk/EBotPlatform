@@ -56,6 +56,10 @@ string EConsole::getBuffer()
 	return echo_buffer.str();
 }
 
+#ifdef _linux_
+#define __write_w32(a, b) a<<b
+#endif
+
 /* Log message to console */
 // type - message type | text - message
 void EConsole::log(std::string type, std::string text)
