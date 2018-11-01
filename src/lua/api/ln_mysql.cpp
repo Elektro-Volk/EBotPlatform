@@ -55,6 +55,9 @@ int ln_mysql::connect(lua_State* L)
 	if (!mysql_real_connect(mysql, server, username, password, database, 0, 0, 0))
 		luaL_error(L, "Connection error: %s", mysql_error(mysql));
 
+	// Setting
+	mysql_options(mysql, MYSQL_OPT_RECONNECT, "1");
+
 	// Create structure
 	mysql_object* object = new mysql_object();
 	object->mysql = mysql;
@@ -92,6 +95,7 @@ int ln_mysql::execute(lua_State* L)
 	lua_settop(L, 0);
 
   	// Do SQL query
+	mysql_ping(mysql);
   	if (mysql_query(mysql, query)) { object->m_lock.unlock(); luaL_error(L, "%s [%s]", mysql_error(mysql), query); };
 	MYSQL_RES *res = mysql_store_result(mysql);
 	if (!res) return 0; // null response

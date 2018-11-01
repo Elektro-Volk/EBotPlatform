@@ -28,7 +28,7 @@
 
 
 bool EBotPlatform::isWork = true;
-const string EBotPlatform::version = "18.10a";
+const string EBotPlatform::version = "18.10b";
 const int EBotPlatform::start_time = time(0);
 
 int main(int argc, char *argv[])
