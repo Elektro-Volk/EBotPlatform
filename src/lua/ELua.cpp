@@ -19,7 +19,7 @@
 #include "ELua.hpp"
 #include "core/ECmd.hpp"
 #include "core/EConsole.hpp"
-#include "vk/ELongPoll.hpp"
+#include "vk/EVkWorker.hpp"
 #include "ELuaError.hpp"
 
 ELua *e_lua;
@@ -40,7 +40,7 @@ void ELua::start()
         state = new ELuaState();
         pool = new EThreadPool();
 
-        e_longpoll->start();
+		e_vkworker->start();
         e_console->log("Lua", "Скрипты были успешно запущены.");
     }
     catch (ELuaError& err) {
@@ -59,7 +59,7 @@ void ELua::forceReload()
     to_reload = false;
     e_console->log("Lua", "Перезагрузка скриптов и модулей...");
 
-    e_longpoll->stop();
+	e_vkworker->stop();
     if (pool) delete pool;
     if (state) delete state;
 

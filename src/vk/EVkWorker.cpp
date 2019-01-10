@@ -16,22 +16,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
-#include "common.hpp"
-#include "rapidjson/document.h"
-#include <map>
-#include "EVkLinster.hpp"
+#include "EVkWorker.hpp"
+#include "ELongPoll.hpp"
+#include "ECallback.hpp"
+#include "core/ENet.hpp"
+#include "core/EConsole.hpp"
 
-class ELongPoll: public EVkLinster {
-private:
-    std::map<string, string> params;
-    string server = "";
+EVkWorker *e_vkworker;
 
-    void getServer();
-    void processError(rapidjson::Document &err);
-    void processMessage(rapidjson::Value &upd);
-public:
-    ELongPoll();
-    void frame() override;
-    ~ELongPoll();
-};
+EVkWorker::EVkWorker()
+{
+
+}
+
+void EVkWorker::initStart()
+{
+	//linster = vk_longpoll->getBool() ? new ELongPoll() : new ECallback();
+	// Wtf?
+	if (vk_longpoll->getBool())
+		linster = new ELongPoll();
+	else
+		linster = new ECallback();
+}
+
+void EVkWorker::start()
+{
+	linster->start();
+}
+
+void EVkWorker::frame()
+{
+	linster->frame();
+}
+
+
+void EVkWorker::stop()
+{
+	linster->stop();
+}
+
+EVkWorker::~EVkWorker()
+{
+
+}

@@ -16,22 +16,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#pragma once
-#include "common.hpp"
-#include "rapidjson/document.h"
-#include <map>
-#include "EVkLinster.hpp"
+#include "ECallback.hpp"
+#include "core/EConsole.hpp"
+#include "core/ENet.hpp"
+#include "vk/EVkApi.hpp"
+#include "lua/ELua.hpp"
+#include <thread>
 
-class ELongPoll: public EVkLinster {
-private:
-    std::map<string, string> params;
-    string server = "";
 
-    void getServer();
-    void processError(rapidjson::Document &err);
-    void processMessage(rapidjson::Value &upd);
-public:
-    ELongPoll();
-    void frame() override;
-    ~ELongPoll();
-};
+ECallback::ECallback()
+{
+
+}
+
+void ECallback::frame()
+{
+	if (!isWork) {
+		std::this_thread::yield(); // CPU 100% hack :)
+		return;
+	}
+
+	e_console->log("CB", "Callback server is not working. Use longpoll.");
+}
+
+ECallback::~ECallback() {}

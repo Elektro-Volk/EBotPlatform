@@ -23,7 +23,7 @@
 #include "ENet.hpp"
 #include "EFilesystem.hpp"
 #include "vk/EVkApi.hpp"
-#include "vk/ELongPoll.hpp"
+#include "vk/EVkWorker.hpp"
 #include "lua/ELua.hpp"
 
 
@@ -53,7 +53,7 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_cmd = new ECmd();
         e_net = new ENet();
         e_vkapi = new EVkApi();
-        e_longpoll = new ELongPoll();
+        e_vkworker = new EVkWorker();
         e_lua = new ELua();
 
         e_console->log("CORE", "EBotPlatform V" + version);
@@ -63,6 +63,7 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_cmd->exec("config.cfg");
         e_console->setEcho(true);
 
+		e_vkworker->initStart();
         e_lua->start();
     }
     catch (const std::runtime_error& error) {
@@ -75,7 +76,7 @@ int EBotPlatform::initEngine(int argc, char *argv[])
 
 void EBotPlatform::frame()
 {
-    e_longpoll->frame();
+	e_vkworker->frame();
     e_lua->frame();
 }
 

@@ -17,6 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #include "ELongPoll.hpp"
+#include "EVkWorker.hpp"
 #include "core/EConsole.hpp"
 #include "core/ENet.hpp"
 #include "vk/EVkApi.hpp"
@@ -25,21 +26,9 @@
 
 using namespace rapidjson;
 
-ELongPoll *e_longpoll;
-
 ELongPoll::ELongPoll()
 {
 
-}
-
-void ELongPoll::start()
-{
-    isWork = true;
-}
-
-void ELongPoll::stop()
-{
-    isWork = false;
 }
 
 void ELongPoll::getServer()
@@ -96,7 +85,7 @@ void ELongPoll::processError(rapidjson::Document &err)
 
 void ELongPoll::processMessage(rapidjson::Value &upd)
 {
-	if(e_vkapi->vk_debugevents->getBool())
+	if(e_vkworker->vk_debugevents->getBool())
 		e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
 	e_lua->add(upd["type"].GetString(), upd["object"]);
 }

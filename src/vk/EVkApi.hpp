@@ -28,8 +28,6 @@ public:
     cvar vk_token = new Cvar("vk_token", "VK group token", "-");
     cvar vk_groupid = new Cvar("vk_groupid", "VK bot group id", "-");
     cvar vk_version = new Cvar("vk_version", "VK Api version", "5.80");
-	cvar vk_longpoll = new Cvar("vk_longpoll", "Use longpoll or callback", "1");
-	cvar vk_debugevents = new Cvar("vk_debugevents", "Debug new group events", "0");
 
     EVkApi();
     string send(string method, std::map<string, string> params = {});

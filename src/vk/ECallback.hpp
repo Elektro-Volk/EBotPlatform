@@ -22,16 +22,10 @@
 #include <map>
 #include "EVkLinster.hpp"
 
-class ELongPoll: public EVkLinster {
+class ECallback : public EVkLinster {
 private:
-    std::map<string, string> params;
-    string server = "";
-
-    void getServer();
-    void processError(rapidjson::Document &err);
-    void processMessage(rapidjson::Value &upd);
 public:
-    ELongPoll();
-    void frame() override;
-    ~ELongPoll();
+	ECallback();
+	void frame() override;
+	~ECallback();
 };

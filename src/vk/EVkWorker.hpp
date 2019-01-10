@@ -18,20 +18,25 @@
 */
 #pragma once
 #include "common.hpp"
-#include "rapidjson/document.h"
 #include <map>
+#include "rapidjson/document.h"
+#include "core/ECvarSystem.hpp"
 #include "EVkLinster.hpp"
 
-class ELongPoll: public EVkLinster {
+class EVkWorker {
 private:
-    std::map<string, string> params;
-    string server = "";
-
-    void getServer();
-    void processError(rapidjson::Document &err);
-    void processMessage(rapidjson::Value &upd);
 public:
-    ELongPoll();
-    void frame() override;
-    ~ELongPoll();
+	cvar vk_longpoll = new Cvar("vk_longpoll", "Use longpoll or callback", "1");
+	cvar vk_debugevents = new Cvar("vk_debugevents", "Debug new group events", "0");
+
+	EVkLinster* linster;
+
+	EVkWorker();
+	void initStart();
+	void start();
+	void frame();
+	void stop();
+    ~EVkWorker();
 };
+
+extern EVkWorker *e_vkworker;

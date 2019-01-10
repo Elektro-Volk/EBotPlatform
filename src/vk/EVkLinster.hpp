@@ -20,18 +20,14 @@
 #include "common.hpp"
 #include "rapidjson/document.h"
 #include <map>
-#include "EVkLinster.hpp"
 
-class ELongPoll: public EVkLinster {
-private:
-    std::map<string, string> params;
-    string server = "";
-
-    void getServer();
-    void processError(rapidjson::Document &err);
-    void processMessage(rapidjson::Value &upd);
+class EVkLinster {
+protected:
+    bool isWork = false;
 public:
-    ELongPoll();
-    void frame() override;
-    ~ELongPoll();
+	EVkLinster();
+    void start();
+    void stop();
+    virtual void frame() = 0;
+    ~EVkLinster();
 };
