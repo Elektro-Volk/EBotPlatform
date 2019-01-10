@@ -51,12 +51,14 @@ bool strutils::ends(string str, string token)
 
 string strutils::toLower(string str)
 {
+	//boost::locale::to_lower
 //#ifdef __linux__
 	std::wstring ss = to_wstring(str);
 	//std::cout << str << '\n';
 	//std::wcout << ss << '\n';
 	for (wchar_t& c : ss) {
-		c = std::tolower(c, std::locale("en_US.UTF8"));
+		c = std::tolower(c, std::locale(""));
+		//c = std::tolower(c, std::locale("en_US.UTF8"));
 	  
 		//for (int j = 0; j < UTF8CASES_SIZE; j++)
 		//	if (c == cases[j][0]) { c = cases[j][1]; break; }
@@ -69,17 +71,9 @@ string strutils::toLower(string str)
 
 string strutils::toUpper(string str)
 {
-#ifdef __linux__
-	auto ss = to_wstring(str);
-  for (wchar_t& c : ss) {
-    c = std::toupper(c);
-		for (int j = 0; j < UTF8CASES_SIZE; j++)
-			if (c == cases[j][1]) { c = cases[j][0]; break; }
-  }
-  return to_string(ss);
-#else
-	return CharUpper(const_cast<char*>(str.c_str()));
-#endif
+	std::wstring ss = to_wstring(str);
+	for (wchar_t& c : ss) c = std::toupper(c, std::locale(""));
+	return to_string(ss);
 }
 
 void strutils::replace(std::string& str, const std::string& old, const std::string& repl) {

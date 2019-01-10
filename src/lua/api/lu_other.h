@@ -16,16 +16,9 @@ GNU General Public License for more details.
 namespace lu_other {
   void init_api(lua_State *L);
 
-  int randtable(lua_State *L);
   int uptime(lua_State *L);
   int relua(lua_State *L);
-  void relua_thread();
   int getId(lua_State *L);
-  int addline(lua_State *L);
   int connect(lua_State *L);
-  int isFlag(lua_State *L);
-  int getPeer(lua_State *L);
   int resp(lua_State *L);
-  int isGroup(lua_State *L);
-  int getmsg(lua_State *L);
 }

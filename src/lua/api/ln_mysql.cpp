@@ -95,7 +95,7 @@ int ln_mysql::execute(lua_State* L)
 	lua_settop(L, 0);
 
   	// Do SQL query
-	mysql_ping(mysql);
+	//mysql_ping(mysql);
   	if (mysql_query(mysql, query)) { object->m_lock.unlock(); luaL_error(L, "%s [%s]", mysql_error(mysql), query); };
 	MYSQL_RES *res = mysql_store_result(mysql);
 	if (!res) return 0; // null response

@@ -5,6 +5,7 @@
 // Api INCLUDES
 #include "ln_vkapi.h"
 #include "ln_mysql.h"
+#include "ln_sqlite.h"
 #include "ln_cmd.h"
 #include "ln_cvars.h"
 #include "ln_console.h"
@@ -18,6 +19,7 @@ void init_lua_api(lua_State *L)
 {
   ln_vkapi::init_api(L);
   ln_mysql::init_api(L);
+  ln_sqlite::init_api(L);
   ln_cmd::init_api(L);
   ln_cvars::init_api(L);
   ln_console::init_api(L);

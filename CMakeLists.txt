@@ -5,15 +5,25 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 SET(CMAKE_CXX_FLAGS "-std=c++11")
-
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Three party
 find_package(CURL REQUIRED)
+find_package(cpprestsdk REQUIRED)
+
+set( MYSQL_INCLUDE_DIRS "-" )
+set( MYSQL_LIBRARIES "-" )
+
+mark_as_advanced( MYSQL_INCLUDE_DIR MYSQL_LIBRARY )
+
+
 link_directories( ${CMAKE_CURRENT_SOURCE_DIR}/third_party/lua/build )
 
 include_directories( ${CURL_INCLUDE_DIR} )
+include_directories( ${MYSQL_INCLUDE_DIR} )
 include_directories( third_party/lua/src )
 include_directories( third_party/rapidjson/include )
+include_directories( third_party/sqlite-snapshot-201812251117 )
 
 # Engine source files
 include_directories( src/ )
@@ -23,5 +33,10 @@ include( src/core/Core.cmake )
 include( src/vk/vk.cmake )
 include( src/lua/lua.cmake )
 
-add_executable(EBP ${S_UTILS} ${S_CORE} ${S_VK} ${S_LUA} )
-target_link_libraries(EBP ${CURL_LIBRARIES} mysqlclient dl pthread lua)
+add_executable(EBP ${S_UTILS} ${S_CORE} ${S_VK} ${S_LUA} third_party/sqlite-snapshot-201812251117/sqlite3.c )
+
+IF (WIN32)
+  target_link_libraries(EBP ${CURL_LIBRARIES} ${MYSQL_LIBRARY} lua cpprestsdk::cpprest)
+ELSE()
+  target_link_libraries(EBP ${CURL_LIBRARIES} ${MYSQL_LIBRARY} dl pthread lua cpprestsdk::cpprest)
+ENDIF()

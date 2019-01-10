@@ -16,9 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+//#define BUILDING_LIBCURL
 #include "ENet.hpp"
 #include "ENet_curltuner.hpp"
 #include "EConsole.hpp"
+#include <cpprest/http_client.h>
+
+using namespace web;
+using namespace web::http::client;
 
 ENet *e_net;
 
@@ -63,10 +68,18 @@ void ENet::setup_curl(CURL *handle, string *buffer)
 
 std::string ENet::sendGet(std::string url)
 {
-    curltuner tuner = curltuner(url);
-    CURLcode result_code = curl_easy_perform(tuner.handle);
-    if(result_code != CURLE_OK) throw ENetException(result_code);
-    return tuner.buffer;
+	http_client client(utility::conversions::to_string_t(url));
+	http::http_request request(http::methods::GET);
+
+	auto re = client.request(request).then([](http::http_response response)
+	{
+		if (response.status_code() == http::status_codes::OK)
+		{
+			return response.extract_utf8string().get();
+		}
+	});
+	re.wait();
+	return re.get();
 }
 
 string ENet::sendPost(string url, std::map<string, string> params)
@@ -81,12 +94,21 @@ string ENet::sendPost(string url, std::map<string, string> params)
 
 string ENet::sendPost(string url, string postdata)
 {
-    curltuner tuner = curltuner(url);
-    curl_easy_setopt(tuner.handle, CURLOPT_POST, 1);
-    curl_easy_setopt(tuner.handle, CURLOPT_POSTFIELDS, postdata.c_str());
-    CURLcode result_code = curl_easy_perform(tuner.handle);
-    if(result_code != CURLE_OK) throw ENetException(result_code);
-    return tuner.buffer;
+	http_client client(utility::conversions::to_string_t(url));
+	http::http_request request(http::methods::POST);
+	request.set_body(postdata, "application/x-www-form-urlencoded");
+
+	auto re = client.request(request).then([](http::http_response response)
+	{
+		if (response.status_code() == http::status_codes::OK)
+		{
+			return response.extract_utf8string().get();
+		}
+	});
+
+	re.wait();
+
+	return re.get();
 }
 
 void ENet::initThread()

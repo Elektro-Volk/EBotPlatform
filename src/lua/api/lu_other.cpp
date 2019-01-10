@@ -25,52 +25,27 @@ GNU General Public License for more details.
 
 void lu_other::init_api(lua_State *L)
 {
-  lua_register(L, "trand", lu_other::randtable);
-  lua_register(L, "uptime", lu_other::uptime);
-  lua_register(L, "relua", lu_other::relua);
-  lua_register(L, "getId", lu_other::getId);
-  lua_register(L, "addline", lu_other::addline);
-  lua_register(L, "connect", lu_other::connect);
-  lua_register(L, "resp", lu_other::resp);
+	lua_register(L, "uptime", lu_other::uptime);
+	lua_register(L, "relua", lu_other::relua);
+	lua_register(L, "getId", lu_other::getId);
+	lua_register(L, "connect", lu_other::connect);
+	lua_register(L, "resp", lu_other::resp);
 
-  luaL_loadstring(L, "function toint (str) return str and tonumber(str) and math.floor(tonumber(str)) end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function ischat (msg) return msg.peer_id > 2000000000 end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function getcid (msg) return msg.peer_id - 2000000000 end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function math.pow (value) return value * value end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function oneb (rmsg, str, ...) rmsg.keyboard = string.format([[{\"one_time\": true,\"buttons\": [ [{\"action\": {\"type\": \"text\",\"label\": \"]] .. str .. [[\"},\"color\": \"default\"}] ]}]], ...) end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function dolist (list, ...) for i = 1, #list do  local res = list[i](...);   if res==false then return false end end  return true; end");
-  lua_pcall(L, 0, 0, 0);
-  luaL_loadstring(L, "function comma_value(n) local left,num,right = string.match(n,'^([^%d]*%d)(%d*)(.-)$')  return left..(num:reverse():gsub('(%d%d%d)','%1\\''):reverse())..right end");
-  lua_pcall(L, 0, 0, 0);
-}
-
-int lu_other::randtable(lua_State *L)
-{
-  lua_settop(L, 1);
-  luaL_checktype(L, 1, LUA_TTABLE);
-  lua_len(L,1);
-  int len = lua_tointeger(L,-1) - 1;
-  lua_pushinteger(L,1+rand()%len);
-  lua_rawget(L,1);
-  return 1;
+	luaL_loadfile(L, "core.lua");
+	lua_pcall(L, 0, LUA_MULTRET, 0);
 }
 
 // int uptime()
 int lu_other::uptime(lua_State *L)
 {
-  lua_pushinteger(L, time(0)-EBotPlatform::start_time);
-  return 1;
+	lua_pushinteger(L, time(0)-EBotPlatform::start_time);
+	return 1;
 }
 
 int lu_other::relua(lua_State *L)
 {
-  e_lua->reload();
-  return 0;
+	e_lua->reload();
+	return 0;
 }
 
 // int uptime()
@@ -86,22 +61,6 @@ int lu_other::getId(lua_State *L)
   if(!result.IsObject()) return 0;
 	if (result.HasMember("object_id")) lua_pushinteger(L, result["object_id"].GetInt()); else lua_pushnil(L);
 	return 1;
-}
-
-// int uptime()
-int lu_other::addline(lua_State *L)
-{
-  const char* line = luaL_checkstring(L, 2);
-	lua_getfield(L, 1, "message"); // Get message
-	if (lua_isnil(L, -1))
-	{
-		lua_pushstring(L, line);
-	}
-	else {
-		lua_pushfstring(L, "%s\n%s", luaL_checkstring(L, -1), line);
-	}
-	lua_setfield(L, 1, "message");
-	return 0;
 }
 
 // int uptime()
