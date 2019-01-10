@@ -89,15 +89,16 @@ void ELongPoll::frame()
 
 void ELongPoll::processError(rapidjson::Document &err)
 {
-  e_console->log("LP", "Ошибка: " + std::to_string(err["failed"].GetInt()));
-  if (err["failed"].GetInt() != 1) getServer();
-  else params["ts"] = std::to_string(err["ts"].GetInt());
+	e_console->log("LP", "Ошибка: " + std::to_string(err["failed"].GetInt()));
+	if (err["failed"].GetInt() != 1) getServer();
+	else params["ts"] = std::to_string(err["ts"].GetInt());
 }
 
 void ELongPoll::processMessage(rapidjson::Value &upd)
 {
-  //e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
-  e_lua->add(upd["type"].GetString(), upd["object"]);
+	if(e_vkapi->vk_debugevents->getBool())
+		e_console->log("LP", "Cобытие: " + string(upd["type"].GetString()));
+	e_lua->add(upd["type"].GetString(), upd["object"]);
 }
 
 ELongPoll::~ELongPoll() {}
