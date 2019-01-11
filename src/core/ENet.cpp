@@ -75,6 +75,7 @@ std::string ENet::sendGet(std::string url)
 	{
 		if (response.status_code() == http::status_codes::OK)
 		{
+			response.headers().set_content_type(L"text/plain");
 			return response.extract_utf8string().get();
 		}
 	});
@@ -102,6 +103,7 @@ string ENet::sendPost(string url, string postdata)
 	{
 		if (response.status_code() == http::status_codes::OK)
 		{
+			response.headers().set_content_type(L"text/plain");
 			return response.extract_utf8string().get();
 		}
 	});
