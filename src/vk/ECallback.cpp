@@ -35,33 +35,48 @@ using namespace web;
 using namespace http;
 using namespace utility;
 using namespace http::experimental::listener;
-
+using namespace rapidjson;
 
 void ECallback::handle(web::http::http_request message)
 {
-	e_console->log("CB", "Á‡ÔÓÒ");
-	message.reply(status_codes::OK, "LOL");
+	Document data;
+	data.Parse(message.extract_utf8string(true).get().c_str());
+	if(!data.IsObject()) return;
+
+	if(e_vkworker->vk_cbsecret->getString() != "" && e_vkworker->vk_cbsecret->getString() != data["secret"].GetString()) {
+		message.reply(status_codes::OK, "incorrect secret");
+		return;
+	}
+
+	if(std::string(data["type"].GetString()) == std::string("confirmation")) {
+		message.reply(status_codes::OK, e_vkworker->vk_cbtoken->getString());
+		e_console->log("CB", "CallBack —Å–µ—Ä–≤–µ—Ä —É—Å–ø–µ—à–Ω–æ –ø–æ–¥—Ç–≤–µ—Ä–∂–¥—ë–Ω.");
+	}
+	else {
+		if(e_vkworker->vk_debugevents->getBool())
+			e_console->log("LP", "C–æ–±—ã—Ç–∏–µ: " + string(data["type"].GetString()));
+		e_lua->add(data["type"].GetString(), data["object"]);
+		message.reply(status_codes::OK, "ok");
+	}
 }
 
 ECallback::ECallback()
 {
-	e_console->log("CB", "—ÓÁ‰‡ÌËÂ CallBack ÒÂ‚Â‡...");
+	e_console->log("CB", "–ó–∞–ø—É—Å–∫ CallBack —Å–µ—Ä–≤–µ—Ä–∞...");
 	auto address = utility::conversions::to_string_t(e_vkworker->vk_cbaddress->getString());
 	m_listener = web::http::experimental::listener::http_listener(address);
-	m_listener.support(methods::GET, std::bind(&ECallback::handle, this, std::placeholders::_1));
+	m_listener.support(methods::POST, std::bind(&ECallback::handle, this, std::placeholders::_1));
 
 	try
 	{
-		m_listener
-			.open()
-			.wait();
+		m_listener.open().wait();
 	}
 	catch (std::exception const& e)
 	{
 		e_console->error("CB", e.what());
 	}
 
-	e_console->log("CB", "CallBack ÒÂ‚Â ÛÒÔÂ¯ÌÓ ÒÓÁ‰‡Ì ÔÓ ‡‰ÂÒÛ: " + conversions::to_utf8string(m_listener.uri().to_string()));
+	e_console->log("CB", "CallBack —É—Å–ø–µ—à–Ω–æ –∑–∞–ø—É—â–µ–Ω –ø–æ –∞–¥—Ä–µ—Å—É: " + conversions::to_utf8string(m_listener.uri().to_string()));
 }
 
 void ECallback::frame()
@@ -73,7 +88,7 @@ void ECallback::frame()
 
 }
 
-ECallback::~ECallback() 
+ECallback::~ECallback()
 {
 	m_listener.close().wait();
 }

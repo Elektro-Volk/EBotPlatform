@@ -28,8 +28,9 @@ private:
 public:
 	cvar vk_longpoll = new Cvar("vk_longpoll", "Use longpoll or callback", "1");
 	cvar vk_debugevents = new Cvar("vk_debugevents", "Debug new group events", "0");
-	cvar vk_cbtoken = new Cvar("vk_cbtoken", "CallBack confirmation token", "0");
+	cvar vk_cbtoken = new Cvar("vk_cbtoken", "CallBack confirmation token", "-");
 	cvar vk_cbaddress = new Cvar("vk_cbaddress", "CallBack server address", "http://localhost:80");
+	cvar vk_cbsecret = new Cvar("vk_cbsecret", "CallBack secret code", "");
 
 	EVkLinster* linster;
 

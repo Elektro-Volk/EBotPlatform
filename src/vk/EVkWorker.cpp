@@ -49,7 +49,6 @@ void EVkWorker::frame()
 	linster->frame();
 }
 
-
 void EVkWorker::stop()
 {
 	linster->stop();
