@@ -22,8 +22,13 @@
 #include <map>
 #include "EVkLinster.hpp"
 
+#include "cpprest/http_listener.h"
+
 class ECallback : public EVkLinster {
 private:
+	web::http::experimental::listener::http_listener m_listener;
+
+	void handle(web::http::http_request message);
 public:
 	ECallback();
 	void frame() override;
