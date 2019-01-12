@@ -48,6 +48,8 @@ void ECallback::handle(web::http::http_request message)
 		return;
 	}
 
+	while(!isWork) { std::this_thread::yield(); }
+
 	if(std::string(data["type"].GetString()) == std::string("confirmation")) {
 		message.reply(status_codes::OK, e_vkworker->vk_cbtoken->getString());
 		e_console->log("CB", "CallBack сервер успешно подтверждён.");
@@ -81,11 +83,7 @@ ECallback::ECallback()
 
 void ECallback::frame()
 {
-	if (!isWork) {
-		std::this_thread::yield(); // CPU 100% hack :)
-		return;
-	}
-
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 ECallback::~ECallback()
