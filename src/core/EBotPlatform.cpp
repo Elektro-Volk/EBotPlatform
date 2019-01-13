@@ -57,7 +57,7 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_vkworker = new EVkWorker();
         e_lua = new ELua();
 
-		e_console->log("", " \x1b[31;5m-------------------====\x1b[0m+\x1b[31;5m====-------------------");
+		e_console->log("", " \x1b[31;5m-------------------====\x1b[0m+\x1b[31;5m====-------------------\x1b[0m");
 		e_console->log("", "                     {_| |_}     EBotPlatform V" + version);
         e_console->log("", "                   /| _|_|_ |\\   Электро-Волк 2016-2019.");
         e_console->log("", "                  ( |/_____\\| )                 ");
