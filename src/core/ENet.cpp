@@ -18,7 +18,6 @@
 */
 //#define BUILDING_LIBCURL
 #include "ENet.hpp"
-#include "ENet_curltuner.hpp"
 #include "EConsole.hpp"
 #include <cpprest/http_client.h>
 
@@ -27,17 +26,8 @@ using namespace web::http::client;
 
 ENet *e_net;
 
-size_t curlWriteCallback(char *ptr, size_t size, size_t nmemb, void *data)
-{
-  size_t realsize = size * nmemb;
-  ((std::string*)data)->append(ptr, realsize);
-  return realsize;
-}
-
 ENet::ENet()
 {
-    curl_global_init(CURL_GLOBAL_ALL);
-    initThread();
 }
 
 string ENet::urlEncode(string str)
@@ -56,14 +46,6 @@ string ENet::urlDecode(string str)
 	string result = esc_text;
 	curl_free(esc_text);
 	return result;
-}
-
-void ENet::setup_curl(CURL *handle, string *buffer)
-{
-    curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, curlWriteCallback);
-    curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)buffer);
-    curl_easy_setopt(handle, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_easy_setopt(handle, CURLOPT_USERAGENT, "EBP/1.0");
 }
 
 std::string ENet::sendGet(std::string url)
@@ -111,18 +93,6 @@ string ENet::sendPost(string url, string postdata)
 	re.wait();
 
 	return re.get();
-}
-
-void ENet::initThread()
-{
-    handles.insert({ std::this_thread::get_id(), new CurlHandle(curl_easy_init()) });
-}
-
-void ENet::closeThread()
-{
-    curl_easy_cleanup(e_net->handles[std::this_thread::get_id()]->handle);
-    delete e_net->handles[std::this_thread::get_id()];
-    e_net->handles.erase(std::this_thread::get_id());
 }
 
 ENet::~ENet()

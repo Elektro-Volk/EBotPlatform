@@ -24,39 +24,15 @@
 #include <mutex>
 
 
-class ENetException {
-public:
-    CURLcode errcode;
-
-    ENetException(CURLcode code) { errcode = code; }
-    const char* what() { return curl_easy_strerror(errcode); }
-};
-
-size_t curlWriteCallback(char *ptr, size_t size, size_t nmemb, void *data);
-class CurlHandle {
-public:
-    CURL* handle;
-    std::mutex lock;
-
-    CurlHandle(CURL* handle) { this->handle = handle; }
-};
-
-
 class ENet {
 private:
 public:
-    std::thread::id main_thread_id  = std::this_thread::get_id();
-    std::map<std::thread::id, CurlHandle*> handles;
-
     ENet();
     string urlEncode(string str);
     string urlDecode(string str);
-    void setup_curl(CURL *handle, string *buffer);
     string sendGet(string url);
     string sendPost(string url, std::map<string, string> params);
     string sendPost(string url, string postdata);
-    void initThread();
-    void closeThread();
     ~ENet();
 };
 

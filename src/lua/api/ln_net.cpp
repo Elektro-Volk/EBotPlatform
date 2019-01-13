@@ -30,29 +30,34 @@ void ln_net::init_api(lua_State *L)
 // string net.send(url, [params|data])
 int ln_net::send(lua_State* L)
 {
-  luaL_checktype(L, 1, LUA_TSTRING);
-  if(lua_gettop(L) == 1) { // GET
-    string data = e_net->sendGet(lua_tostring(L, 1));
-    lua_pushlstring(L, data.c_str(), data.size());
-  }
-  else {
-    if(lua_istable(L, 2)) { // Params
-      lua_pushnil(L);
-      std::map<string, string> args;
-      while (lua_next(L, 2)) {
-        lua_pushvalue(L, -2);
-        args.insert({ luaL_checkstring(L, -1), luaL_checkstring(L, -2) });
-        lua_pop(L, 2);
-      }
+	try {
+		luaL_checktype(L, 1, LUA_TSTRING);
+		if (lua_gettop(L) == 1) { // GET
+			string data = e_net->sendGet(lua_tostring(L, 1));
+			lua_pushlstring(L, data.c_str(), data.size());
+		}
+		else {
+			if (lua_istable(L, 2)) { // Params
+				lua_pushnil(L);
+				std::map<string, string> args;
+				while (lua_next(L, 2)) {
+					lua_pushvalue(L, -2);
+					args.insert({ luaL_checkstring(L, -1), luaL_checkstring(L, -2) });
+					lua_pop(L, 2);
+				}
 
-      auto result = e_net->sendPost(lua_tostring(L, 1), args);
-      lua_pushlstring(L, result.c_str(), result.size());
-    }
-    else {
-      auto result = e_net->sendPost(lua_tostring(L, 1), lua_tostring(L, 2));
-      lua_pushlstring(L, result.c_str(), result.size());
-    }
-  }
+				auto result = e_net->sendPost(lua_tostring(L, 1), args);
+				lua_pushlstring(L, result.c_str(), result.size());
+			}
+			else {
+				auto result = e_net->sendPost(lua_tostring(L, 1), lua_tostring(L, 2));
+				lua_pushlstring(L, result.c_str(), result.size());
+			}
+		}
+	}
+	catch (const std::exception &err) {
+		luaL_error(L, err.what());
+	}
   return 1;
 }
 

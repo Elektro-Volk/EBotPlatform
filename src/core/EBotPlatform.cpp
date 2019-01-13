@@ -28,7 +28,7 @@
 
 
 bool EBotPlatform::isWork = true;
-const string EBotPlatform::version = "18.11a";
+const string EBotPlatform::version = "19.1a";
 const int EBotPlatform::start_time = time(0);
 
 int main(int argc, char *argv[])
@@ -58,7 +58,7 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_lua = new ELua();
 
         e_console->log("CORE", "EBotPlatform V" + version);
-        e_console->log("CORE", "Электро-Волк 2016-2018.");
+        e_console->log("CORE", "Электро-Волк 2016-2019.");
 
         e_console->setEcho(false);
         e_cmd->exec("config.cfg");

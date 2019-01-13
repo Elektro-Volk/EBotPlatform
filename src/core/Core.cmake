@@ -7,5 +7,4 @@ set( S_CORE
     ${CORE_PATH}/ECvarSystem.cpp
     ${CORE_PATH}/ECmd.cpp
     ${CORE_PATH}/ENet.cpp
-    ${CORE_PATH}/ENet_curltuner.cpp
 )

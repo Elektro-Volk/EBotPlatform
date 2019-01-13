@@ -18,7 +18,6 @@
 */
 #include "EThreadPoolWorker.hpp"
 #include "ELua.hpp"
-#include "core/ENet.hpp"
 #include "core/EConsole.hpp"
 #include "ELuaError.hpp"
 #include "ELuaJson.hpp"
@@ -33,7 +32,6 @@ EThreadPoolWorker::EThreadPoolWorker(int tid)
 
 void EThreadPoolWorker::loop()
 {
-    e_net->initThread();
     while (enabled) {
         std::unique_lock<std::mutex> locker(mutex);
     	cv.wait(locker, [&](){ return busy || !enabled; });
@@ -45,7 +43,6 @@ void EThreadPoolWorker::loop()
         lua_lock(L);
         busy = false;
     }
-    e_net->closeThread();
 }
 
 bool EThreadPoolWorker::isBusy()

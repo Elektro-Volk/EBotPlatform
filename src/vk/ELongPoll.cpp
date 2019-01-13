@@ -48,10 +48,9 @@ void ELongPoll::getServer()
 
         e_console->log("LP", "LongPoll сервер получен.");
     }
-    catch (ENetException &err) {
-        e_console->error("LP", "Произошла сетевая ошибка:");
+    catch (std::exception &err) {
+        e_console->error("LP", "Произошла ошибка:");
         e_console->error("LP", err.what());
-        throw std::runtime_error(err.what());
     }
 }
 
