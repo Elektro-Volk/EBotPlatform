@@ -57,8 +57,17 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_vkworker = new EVkWorker();
         e_lua = new ELua();
 
-        e_console->log("CORE", "EBotPlatform V" + version);
-        e_console->log("CORE", "Электро-Волк 2016-2019.");
+		e_console->log("", " \x1b[31;5m-------------------====\x1b[0m+\x1b[31;5m====-------------------");
+		e_console->log("", "                     {_| |_}     EBotPlatform V" + version);
+        e_console->log("", "                   /| _|_|_ |\\   Электро-Волк 2016-2019.");
+        e_console->log("", "                  ( |/_____\\| )                 ");
+        e_console->log("", "               |--`/_/  |  \\_\\'--|              ");
+        e_console->log("", "           ____   //( ) |    \\\\   ____          ");
+        e_console->log("", "          | ++ |==|\\___/ \\___/|==| ++ |         ");
+        e_console->log("", "           \\__/   |  ___ ___  |   \\__/          ");
+        e_console->log("", "                 __\\/oo X []\\/__                ");
+        e_console->log("", "                || [\\__/_\\__/] ||               ");
+        e_console->log("", "               ~~~~           ~~~~              ");
 
         e_console->setEcho(false);
         e_cmd->exec("config.cfg");
