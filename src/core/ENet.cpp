@@ -59,8 +59,8 @@ std::string ENet::sendGet(std::string url)
 		{
 			//response.headers().set_content_type(U("text/plain"));
 			return response.extract_utf8string(true).get();
-		} 
-		else throw std::exception(std::to_string((int)response.status_code()).c_str());
+		}
+		else throw std::runtime_error(std::to_string((int)response.status_code()).c_str());
 	});
 	re.wait();
 	return re.get();
