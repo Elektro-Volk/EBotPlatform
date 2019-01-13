@@ -16,6 +16,7 @@ addons:
     packages:
     - gcc-6
     - g++-6
+    - libcpprest-dev
 
 script:
     - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-6 /usr/bin/gcc
