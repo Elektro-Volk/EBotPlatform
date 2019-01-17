@@ -40,7 +40,7 @@ void ELua::start()
         state = new ELuaState();
         pool = new EThreadPool();
 
-		e_vkworker->start();
+		e_vkworker->enable();
         e_console->log("Lua", "Скрипты были успешно запущены.");
     }
     catch (ELuaError& err) {
@@ -53,30 +53,15 @@ void ELua::start()
     }
 }
 
-void ELua::forceReload()
-{
-
-    to_reload = false;
-    e_console->log("Lua", "Перезагрузка скриптов и модулей...");
-
-	e_vkworker->stop();
-    if (pool) delete pool;
-    if (state) delete state;
-
-    start();
-}
-
 void ELua::reload()
 {
-    if (to_reload) return e_console->error("Lua", "Перезагрузка уже воспроизводится в текущее время.");
+	e_console->log("Lua", "Перезагрузка скриптов и модулей...");
 
-    to_reload = true;
-    e_console->log("Lua", "Ожидание кадра для перезагрузки скриптов.");
-}
+	e_vkworker->disable();
+	if (pool) delete pool;
+	if (state) delete state;
 
-void ELua::frame()
-{
-    if(to_reload) forceReload();
+	start();
 }
 
 void ELua::add(string type, rapidjson::Value &msg)

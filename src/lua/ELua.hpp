@@ -33,10 +33,7 @@ public:
 
     ELua();
     void start();
-    void stop();
-    void forceReload();
     void reload();
-    void frame();
     void add(string type, rapidjson::Value &msg);
     void call(lua_State* L, int argnum = 0, int retnum = 0);
     bool safeCall(lua_State* L, int argnum = 0, int retnum = 0);

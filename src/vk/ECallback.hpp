@@ -31,6 +31,5 @@ private:
 	void handle(web::http::http_request message);
 public:
 	ECallback();
-	void frame() override;
 	~ECallback();
 };

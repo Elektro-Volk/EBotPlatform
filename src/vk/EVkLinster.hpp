@@ -17,17 +17,4 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 #pragma once
-#include "common.hpp"
-#include "rapidjson/document.h"
-#include <map>
-
-class EVkLinster {
-protected:
-    bool isWork = false;
-public:
-	EVkLinster();
-    void start();
-    void stop();
-    virtual void frame() = 0;
-    ~EVkLinster();
-};
+class EVkLinster { };

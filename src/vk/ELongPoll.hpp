@@ -28,10 +28,10 @@ private:
     string server = "";
 
     void getServer();
+	void frame();
     void processError(rapidjson::Document &err);
     void processMessage(rapidjson::Value &upd);
 public:
     ELongPoll();
-    void frame() override;
     ~ELongPoll();
 };

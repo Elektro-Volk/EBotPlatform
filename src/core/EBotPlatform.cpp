@@ -39,12 +39,11 @@ int main(int argc, char *argv[])
 	SetConsoleOutputCP(65001);
 	SetConsoleCP(65001);
 #endif
-    EBotPlatform::initEngine(argc, argv);
-    while (EBotPlatform::isWork) { EBotPlatform::frame(); }
+    EBotPlatform::startEngine(argc, argv);
     return 0;
 }
 
-int EBotPlatform::initEngine(int argc, char *argv[])
+int EBotPlatform::startEngine(int argc, char *argv[])
 {
     try {
         // Init Core
@@ -73,8 +72,8 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         e_cmd->exec("config.cfg");
         e_console->setEcho(true);
 
-		e_vkworker->initStart();
         e_lua->start();
+		e_vkworker->start();
     }
     catch (const std::runtime_error& error) {
         e_console->setEcho(true);
@@ -82,12 +81,6 @@ int EBotPlatform::initEngine(int argc, char *argv[])
         EBotPlatform::shutdown();
     }
     return 0;
-}
-
-void EBotPlatform::frame()
-{
-	e_vkworker->frame();
-    e_lua->frame();
 }
 
 void EBotPlatform::shutdown()

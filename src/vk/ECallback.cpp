@@ -48,7 +48,7 @@ void ECallback::handle(web::http::http_request message)
 		return;
 	}
 
-	while(!isWork) { std::this_thread::yield(); }
+	while(!e_vkworker->isWork) { std::this_thread::yield(); }
 
 	if(std::string(data["type"].GetString()) == std::string("confirmation")) {
 		message.reply(status_codes::OK, e_vkworker->vk_cbtoken->getString());
@@ -78,12 +78,8 @@ ECallback::ECallback()
 		e_console->error("CB", e.what());
 	}
 
-	e_console->log("CB", "CallBack успешно запущен по адресу: " + conversions::to_utf8string(m_listener.uri().to_string()));
-}
-
-void ECallback::frame()
-{
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	e_console->log("CB", "CallBack успешно запущен.");
+	while(true) std::this_thread::sleep_for(std::chrono::seconds(30)); // Magick value
 }
 
 ECallback::~ECallback()

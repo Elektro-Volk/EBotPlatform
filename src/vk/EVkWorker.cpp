@@ -29,7 +29,12 @@ EVkWorker::EVkWorker()
 
 }
 
-void EVkWorker::initStart()
+void EVkWorker::init()
+{
+	
+}
+
+void EVkWorker::start()
 {
 	//linster = vk_longpoll->getBool() ? new ELongPoll() : new ECallback();
 	// Wtf?
@@ -39,19 +44,14 @@ void EVkWorker::initStart()
 		linster = new ECallback();
 }
 
-void EVkWorker::start()
+void EVkWorker::enable()
 {
-	linster->start();
+	isWork = true;
 }
 
-void EVkWorker::frame()
+void EVkWorker::disable()
 {
-	linster->frame();
-}
-
-void EVkWorker::stop()
-{
-	linster->stop();
+	isWork = false;
 }
 
 EVkWorker::~EVkWorker()

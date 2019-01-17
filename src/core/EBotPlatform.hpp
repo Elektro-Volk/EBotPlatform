@@ -24,7 +24,6 @@ namespace EBotPlatform {
     extern const string version;
     extern const int start_time;
 
-    int initEngine(int argc, char *argv[]);
-    void frame();
+    int startEngine(int argc, char *argv[]);
     void shutdown();
 };

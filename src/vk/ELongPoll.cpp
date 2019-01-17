@@ -28,7 +28,8 @@ using namespace rapidjson;
 
 ELongPoll::ELongPoll()
 {
-
+	getServer();
+	while (true) frame();
 }
 
 void ELongPoll::getServer()
@@ -56,7 +57,7 @@ void ELongPoll::getServer()
 
 void ELongPoll::frame()
 {
-    if (!isWork) {
+    if (!e_vkworker->isWork) {
         std::this_thread::yield(); // CPU 100% hack :)
         return;
     }

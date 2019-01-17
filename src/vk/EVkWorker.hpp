@@ -33,12 +33,13 @@ public:
 	cvar vk_cbsecret = new Cvar("vk_cbsecret", "CallBack secret code", "");
 
 	EVkLinster* linster;
+	bool isWork = false;
 
 	EVkWorker();
-	void initStart();
+	void init();
 	void start();
-	void frame();
-	void stop();
+	void enable();
+	void disable();
     ~EVkWorker();
 };
 
