@@ -21,6 +21,8 @@
 #include "core/EConsole.hpp"
 #include "vk/EVkWorker.hpp"
 #include "ELuaError.hpp"
+#include "ELuaJson.hpp"
+#include "rapidjson/writer.h"
 
 ELua *e_lua;
 
@@ -66,7 +68,29 @@ void ELua::reload()
 
 void ELua::add(string type, rapidjson::Value &msg)
 {
-    pool->add(type, msg);
+	rapidjson::StringBuffer buffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	msg.Accept(writer);
+	string s = buffer.GetString();
+
+    pool->add([type, s](lua_State* L) {
+		try {
+			lua_unlock(L);
+			lua_getglobal(L, "vk_events");
+			if (lua_isnil(L, -1)) throw ELuaError("Global table `vk_events` not found");
+			lua_getfield(L, -1, type.c_str());
+			if (lua_isnil(L, -1)) throw ELuaError("Function `vk_events['" + type + "']` not found");
+			lua_pushstring(L, s.c_str());
+			ELuaJson::decode(L);
+			e_lua->safeCall(L, 1);
+			lua_settop(L, 0);
+			lua_lock(L);
+		}
+		catch (ELuaError& err) {
+			e_console->error("Lua", err.what());
+			lua_lock(L);
+		}
+	});
 }
 
 void ELua::call(lua_State* L, int argnum, int retnum)

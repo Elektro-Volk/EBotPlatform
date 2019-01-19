@@ -37,10 +37,7 @@ void EThreadPoolWorker::loop()
     	cv.wait(locker, [&](){ return busy || !enabled; });
 
     	if (!busy) continue;
-        lua_unlock(L);
-        e_lua->safeCall(L, 1);
-        lua_settop(L, 0);
-        lua_lock(L);
+		job(L);
         busy = false;
     }
 }
@@ -50,26 +47,12 @@ bool EThreadPoolWorker::isBusy()
     return busy;
 }
 
-void EThreadPoolWorker::add(string type, rapidjson::Value &msg)
+void EThreadPoolWorker::add(std::function<void(lua_State*)> job)
 {
     std::unique_lock<std::mutex> locker(mutex);
-    busy = true;
-
-    try {
-        lua_unlock(L);
-        lua_getglobal(L, "vk_events");
-        if (lua_isnil(L, -1)) throw ELuaError("Global table `vk_events` not found");
-        lua_getfield(L, -1, type.c_str());
-        if (lua_isnil(L, -1)) throw ELuaError("Function `vk_events['" + type + "']` not found");
-        ELuaJson::C2L::pushValue(L, msg);
-        lua_lock(L);
-        cv.notify_one();
-    }
-    catch (ELuaError& err) {
-        e_console->error("Lua", err.what());
-        lua_lock(L);
-        busy = false;
-    }
+    this->busy = true;
+	this->job = job;
+	cv.notify_one();
 }
 
 EThreadPoolWorker::~EThreadPoolWorker()

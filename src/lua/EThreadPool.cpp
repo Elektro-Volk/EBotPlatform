@@ -31,7 +31,7 @@ EThreadPool::EThreadPool()
         e_console->log("POOL", "Создано " + std::to_string(pool_count) + " потока.");
 }
 
-void EThreadPool::add(string type, rapidjson::Value &msg)
+void EThreadPool::add(std::function<void(lua_State*)> job)
 {
     // find free pool and add msg then
     EThreadPoolWorker *freeWorker = nullptr;
@@ -42,7 +42,7 @@ void EThreadPool::add(string type, rapidjson::Value &msg)
             break;
         }
     }
-    freeWorker->add(type, msg);
+    freeWorker->add(job);
 }
 
 EThreadPool::~EThreadPool()

@@ -27,7 +27,7 @@ public:
     std::vector<EThreadPoolWorker*> workers;
 
     EThreadPool();
-    void add(string type, rapidjson::Value &msg);
+    void add(std::function<void(lua_State*)> job);
     ~EThreadPool();
 protected:
 

@@ -11,6 +11,7 @@
 #include "ln_console.h"
 #include "lu_string.h"
 #include "ln_net.h"
+#include "ln_timers.h"
 #include "ln_fs.h"
 #include "lu_json.h"
 #include "lu_other.h"
@@ -25,6 +26,7 @@ void init_lua_api(lua_State *L)
   ln_console::init_api(L);
   lu_string::init_api(L);
   ln_net::init_api(L);
+  ln_timers::init_api(L);
   ln_fs::init_api(L);
   lu_json::init_api(L);
   lu_other::init_api(L);

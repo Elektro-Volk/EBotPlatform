@@ -20,7 +20,6 @@
 #include "common.hpp"
 #include <thread>
 #include <mutex>
-#include <condition_variable>
 #include "rapidjson/document.h"
 #include "luaheaders.hpp"
 
@@ -38,9 +37,11 @@ private:
 
     void loop();
 public:
+	std::function<void(lua_State*)> job;
+
     EThreadPoolWorker(int id);
     bool isBusy();
-    void add(string type, rapidjson::Value &msg);
+    void add(std::function<void(lua_State*)> job);
     ~EThreadPoolWorker();
 protected:
 

@@ -9,6 +9,7 @@ set( S_LUA_API
     ${LUA_API_PATH}/ln_sqlite.cpp
     ${LUA_API_PATH}/ln_net.cpp
     ${LUA_API_PATH}/ln_vkapi.cpp
+    ${LUA_API_PATH}/ln_timers.cpp
     ${LUA_API_PATH}/lu_json.cpp
     ${LUA_API_PATH}/lu_other.cpp
     ${LUA_API_PATH}/lu_string.cpp
