@@ -20,6 +20,8 @@
 #include "common.hpp"
 #include <thread>
 #include <mutex>
+#include <condition_variable>
+#include <functional>
 #include "rapidjson/document.h"
 #include "luaheaders.hpp"
 
