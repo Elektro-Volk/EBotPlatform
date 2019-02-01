@@ -31,8 +31,8 @@ public:
     string urlEncode(string str);
     string urlDecode(string str);
     string sendGet(string url);
-    string sendPost(string url, std::map<string, string> params);
-    string sendPost(string url, string postdata);
+    string sendPost(string url, std::map<string, string> params, string datatype = "application/x-www-form-urlencoded");
+    string sendPost(string url, string postdata, string datatype = "application/x-www-form-urlencoded");
     ~ENet();
 };
 

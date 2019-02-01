@@ -24,6 +24,8 @@
 #include "ELuaJson.hpp"
 #include "rapidjson/writer.h"
 
+#include "api/ln_timers.h" // Clear
+
 ELua *e_lua;
 
 void cmd_relua(std::vector<string> args)
@@ -60,6 +62,7 @@ void ELua::reload()
 	e_console->log("Lua", "Перезагрузка скриптов и модулей...");
 
 	e_vkworker->disable();
+	ln_timers::clear();
 	if (pool) delete pool;
 	if (state) delete state;
 

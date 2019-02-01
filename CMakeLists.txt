@@ -34,7 +34,7 @@ include( src/core/Core.cmake )
 include( src/vk/vk.cmake )
 include( src/lua/lua.cmake )
 
-add_executable(EBP ${S_UTILS} ${S_CORE} ${S_VK} ${S_LUA} third_party/sqlite-snapshot-201812251117/sqlite3.c )
+add_executable(EBP ${S_UTILS} ${S_CORE} ${S_VK} ${S_LUA} third_party/sqlite-snapshot-201812251117/sqlite3.c third_party/multipart_parser/multipart_parser.cpp )
 
 IF (WIN32)
   target_link_libraries(EBP ${CURL_LIBRARIES} ${MYSQL_LIBRARY} lua cpprestsdk::cpprest)

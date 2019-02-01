@@ -22,22 +22,18 @@ std::mutex ln_timers::mutex;
 
 void ln_timers::init_api(lua_State *L)
 {
-  lua_createtable(L, 0, 1);
+	lua_createtable(L, 0, 1);
 
-  luaapi_tablefunc(L, ln_timers::create, "ncreate");
-  luaapi_tablefunc(L, ln_timers::get_function, "get_function");
-  luaapi_tablefunc(L, ln_timers::destroy, "destroy");
+	luaapi_tablefunc(L, ln_timers::create, "ncreate");
+	luaapi_tablefunc(L, ln_timers::get_function, "get_function");
+	luaapi_tablefunc(L, ln_timers::destroy, "destroy");
 
-  string str = "return function(p,c,f,...)local d={...}; return timers.ncreate(p,c,function()f(table.unpack(d))end)end";
-  luaL_loadbuffer(L, str.c_str(), str.size(), "timers.create");
-  lua_call(L, 0, 1);
-  lua_setfield(L, -2, "create");
+	string str = "return function(p,c,f,...)local d={...}; return timers.ncreate(p,c,function()f(table.unpack(d))end)end";
+	luaL_loadbuffer(L, str.c_str(), str.size(), "timers.create");
+	lua_call(L, 0, 1);
+	lua_setfield(L, -2, "create");
 
-  lua_setglobal(L, "timers");
-
-//e_console->log("TIMERS", "Создан новый таймер #"+std::to_string(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
-  //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
- // e_console->log("TIMERS", "Создан новый таймер #"+std::to_string(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+	lua_setglobal(L, "timers");
 }
 
 // int timers.create(period, count, func)
@@ -63,9 +59,6 @@ int ln_timers::create(lua_State *L)
 	timers.insert(std::pair<int, timer>(id, { "timer_"+std::to_string(id), this_time + period, period, count }));
 	locker.unlock();
 	if (timers.size() == 1) std::thread(loop).detach();
-
-    //e_console->log("TIMERS", "Создан новый таймер #"+std::to_string(id));
-    //e_console->log("TIMERS", "Кол-во таймеров: "+std::to_string(timers.size()));
 
 	lua_pushinteger(L, id);
 	return 1;
@@ -98,8 +91,7 @@ void ln_timers::loop()
 		std::unique_lock<std::mutex> locker(mutex);
         int this_time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		for (auto &ent : timers) {
-            //e_console->log("TIMERS", std::to_string(this_time)+"#"+std::to_string(ent.second.next));
-			if (this_time >= ent.second.next) {
+            if (this_time >= ent.second.next) {
 				// Trigger timer
 				e_lua->pool->add([ent](lua_State* L) {
 					lua_unlock(L);
@@ -128,4 +120,10 @@ void ln_timers::loop()
 		if (timers.size() == 0) return;
 		if(min_time!=0) std::this_thread::sleep_for(std::chrono::milliseconds(min_time));
 	}
+}
+
+void ln_timers::clear()
+{
+	std::unique_lock<std::mutex> locker(mutex);
+	timers.clear();
 }

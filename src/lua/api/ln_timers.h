@@ -34,4 +34,5 @@ namespace ln_timers {
 
 	// In engine
 	void loop();
+	void clear();
 }

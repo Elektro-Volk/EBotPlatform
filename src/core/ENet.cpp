@@ -20,8 +20,10 @@
 #include "ENet.hpp"
 #include "EConsole.hpp"
 #include <cpprest/http_client.h>
+#include "../multipart_parser/multipart_parser.h"
 
 using namespace web;
+using namespace web::http;
 using namespace web::http::client;
 
 ENet *e_net;
@@ -57,7 +59,6 @@ std::string ENet::sendGet(std::string url)
 	{
 		if (response.status_code() == http::status_codes::OK)
 		{
-			//response.headers().set_content_type(U("text/plain"));
 			return response.extract_utf8string(true).get();
 		}
 		else throw std::runtime_error(std::to_string((int)response.status_code()).c_str());
@@ -66,29 +67,47 @@ std::string ENet::sendGet(std::string url)
 	return re.get();
 }
 
-string ENet::sendPost(string url, std::map<string, string> params)
+string ENet::sendPost(string url, std::map<string, string> params, string datatype)
 {
-    string paramline;
-	for (auto iter = params.begin(); iter != params.end(); iter++) {
-		paramline.append(iter->first + "=" + urlEncode(iter->second) + "&");
+    string data;
+
+	if (datatype == "multipart/form-data") { // Ну тут ваще всё печально
+		MultipartParser parser;
+
+		for (auto p = params.begin(); p != params.end(); p++) {
+			
+
+			if (p->first[0] == '@')
+				parser.AddFile(p->first.substr(1), p->second);
+			else
+				parser.AddParameter(p->first, p->second);
+		}
+
+		datatype.append("; boundary=" + parser.boundary());
+		data = parser.GenBodyContent();
+		e_console->log("DATA", data);
+	}
+	else {
+		for (auto p = params.begin(); p != params.end(); p++)
+			data.append(p->first + "=" + urlEncode(p->second) + "&");
 	}
 
-    return this->sendPost(url, paramline);
+    return this->sendPost(url, data, datatype);
 }
 
-string ENet::sendPost(string url, string postdata)
+string ENet::sendPost(string url, string postdata, string datatype)
 {
 	http_client client(utility::conversions::to_string_t(url));
 	http::http_request request(http::methods::POST);
-	request.set_body(postdata, "application/x-www-form-urlencoded");
+	request.set_body(postdata, datatype);
 
 	auto re = client.request(request).then([](http::http_response response)
 	{
 		if (response.status_code() == http::status_codes::OK)
 		{
-			//response.headers().set_content_type(U("text/plain"));
 			return response.extract_utf8string(true).get();
 		}
+		else throw std::runtime_error(std::to_string((int)response.status_code()).c_str());
 	});
 
 	re.wait();

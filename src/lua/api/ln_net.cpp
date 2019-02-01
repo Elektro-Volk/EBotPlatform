@@ -37,6 +37,8 @@ int ln_net::send(lua_State* L)
 			lua_pushlstring(L, data.c_str(), data.size());
 		}
 		else {
+			string datatype = lua_isstring(L, 3) ? lua_tostring(L, 3) : "application/x-www-form-urlencoded";
+
 			if (lua_istable(L, 2)) { // Params
 				lua_pushnil(L);
 				std::map<string, string> args;
@@ -46,11 +48,11 @@ int ln_net::send(lua_State* L)
 					lua_pop(L, 2);
 				}
 
-				auto result = e_net->sendPost(lua_tostring(L, 1), args);
+				auto result = e_net->sendPost(lua_tostring(L, 1), args, datatype);
 				lua_pushlstring(L, result.c_str(), result.size());
 			}
 			else {
-				auto result = e_net->sendPost(lua_tostring(L, 1), lua_tostring(L, 2));
+				auto result = e_net->sendPost(lua_tostring(L, 1), lua_tostring(L, 2), datatype);
 				lua_pushlstring(L, result.c_str(), result.size());
 			}
 		}
